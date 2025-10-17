@@ -12,6 +12,72 @@
             min-height: 100vh;
             padding: 30px 20px;
         }
+        .password-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .password-box {
+            max-width: 400px;
+            padding: 40px;
+            background: white;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        .password-box h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .password-box h2 {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .password-box input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .password-box button {
+            width: 100%;
+            padding: 15px;
+            background: #f5576c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .password-box button:hover {
+            background: #e63e53;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+        #erreurMDP {
+            color: #dc3545;
+            margin-top: 15px;
+            font-weight: 600;
+            display: none;
+        }
+        .hidden {
+            display: none !important;
+        }
         .container {
             background: white;
             border-radius: 15px;
@@ -259,66 +325,107 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Devoir - Unité 1: Environnement Matériel du Système Informatique</h1>
-        <p class="subtitle">Composants, Périphériques et Conversions d'Unités</p>
+    <!-- ÉCRAN DE MOT DE PASSE -->
+    <div id="passwordScreen" class="password-container">
+        <div class="password-box">
+            <h1>🔒 Devoir Protégé</h1>
+            <h2>Entrez le mot de passe</h2>
+            <input type="password" id="passwordInput" placeholder="Mot de passe" autofocus>
+            <button onclick="verifierMotDePasse()">Accéder au devoir</button>
+            <div id="erreurMDP">❌ Mot de passe incorrect</div>
+        </div>
+    </div>
 
-        <div class="header-info">
-            <h3 style="color: #333; margin-bottom: 15px;">Informations Personnelles</h3>
-            <div class="info-grid">
-                <div class="form-field">
-                    <label for="nom">Nom complet</label>
-                    <input type="text" id="nom" placeholder="Votre nom et prénom">
-                </div>
-                <div class="form-field">
-                    <label for="classe">Classe</label>
-                    <select id="classe">
-                        <option value="">-- Sélectionner --</option>
-                        <option value="2/1">2/1</option>
-                        <option value="2/2">2/2</option>
-                        <option value="2/3">2/3</option>
-                        <option value="2/4">2/4</option>
-                        <option value="2/5">2/5</option>
-                        <option value="2/6">2/6</option>
-                        <option value="2/7">2/7</option>
-                        <option value="2/8">2/8</option>
-                        <option value="2/9">2/9</option>
-                    </select>
-                </div>
-                <div class="form-field">
-                    <label for="groupe">Groupe</label>
-                    <select id="groupe">
-                        <option value="">-- Sélectionner --</option>
-                        <option value="G1">G1</option>
-                        <option value="G2">G2</option>
-                    </select>
-                </div>
-                <div class="form-field">
-                    <label for="date">Date</label>
-                    <input type="date" id="date">
+    <!-- ÉCRAN DU DEVOIR -->
+    <div id="devoirScreen" class="hidden">
+        <div class="container">
+            <h1>Devoir - Unité 1: Environnement Matériel du Système Informatique</h1>
+            <p class="subtitle">Composants, Périphériques et Conversions d'Unités</p>
+
+            <div class="header-info">
+                <h3 style="color: #333; margin-bottom: 15px;">Informations Personnelles</h3>
+                <div class="info-grid">
+                    <div class="form-field">
+                        <label for="nom">Nom complet</label>
+                        <input type="text" id="nom" placeholder="Votre nom et prénom">
+                    </div>
+                    <div class="form-field">
+                        <label for="classe">Classe</label>
+                        <select id="classe">
+                            <option value="">-- Sélectionner --</option>
+                            <option value="2/1">2/1</option>
+                            <option value="2/2">2/2</option>
+                            <option value="2/3">2/3</option>
+                            <option value="2/4">2/4</option>
+                            <option value="2/5">2/5</option>
+                            <option value="2/6">2/6</option>
+                            <option value="2/7">2/7</option>
+                            <option value="2/8">2/8</option>
+                            <option value="2/9">2/9</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label for="groupe">Groupe</label>
+                        <select id="groupe">
+                            <option value="">-- Sélectionner --</option>
+                            <option value="G1">G1</option>
+                            <option value="G2">G2</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label for="date">Date</label>
+                        <input type="date" id="date">
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="warning" id="warning">Veuillez remplir tous les champs et répondre à toutes les questions avant de valider!</div>
+            <div class="warning" id="warning">Veuillez remplir tous les champs et répondre à toutes les questions avant de valider!</div>
 
-        <div id="questionsContainer"></div>
+            <div id="questionsContainer"></div>
 
-        <div class="button-group">
-            <button class="btn-primary" onclick="verifier()">Valider mes réponses</button>
-            <button class="btn-secondary" onclick="reinitialiser()">Réinitialiser</button>
-            <button class="btn-print" id="printBtn" style="display:none;" onclick="window.print()">Imprimer</button>
-            <button class="btn-primary" id="submitBtn" style="display:none; background:#28a745;" onclick="envoyerAuSheet()">Envoyer à Google Sheet</button>
-        </div>
+            <div class="button-group">
+                <button class="btn-primary" onclick="verifier()">Valider mes réponses</button>
+                <button class="btn-secondary" onclick="reinitialiser()">Réinitialiser</button>
+                <button class="btn-print" id="printBtn" style="display:none;" onclick="window.print()">Imprimer</button>
+                <button class="btn-primary" id="submitBtn" style="display:none; background:#28a745;" onclick="envoyerAuSheet()">Envoyer à Google Sheet</button>
+            </div>
 
-        <div class="results" id="results">
-            <h2>Résultats de l'Évaluation</h2>
-            <div id="resultsList"></div>
-            <div class="score-box" id="scoreBox"></div>
+            <div class="results" id="results">
+                <h2>Résultats de l'Évaluation</h2>
+                <div id="resultsList"></div>
+                <div class="score-box" id="scoreBox"></div>
+            </div>
         </div>
     </div>
 
     <script>
+        // ========== CONFIGURATION MOT DE PASSE ==========
+        const MOT_DE_PASSE = '785614';
+        
+        function verifierMotDePasse() {
+            const mdp = document.getElementById('passwordInput').value;
+            
+            if (mdp === MOT_DE_PASSE) {
+                document.getElementById('passwordScreen').classList.add('hidden');
+                document.getElementById('devoirScreen').classList.remove('hidden');
+                document.getElementById('date').valueAsDate = new Date();
+                createQuestions();
+            } else {
+                document.getElementById('erreurMDP').style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+                setTimeout(() => {
+                    document.getElementById('erreurMDP').style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verifierMotDePasse();
+            }
+        });
+
+        // ========== QUESTIONS ==========
         const questionsDB = [
             {
                 id: 'cm',
@@ -498,6 +605,8 @@
 
         let randomizedQuestions = [];
         let userAnswers = {};
+        let reponses_affichage = [];
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzE11AdQGIVMSgOv7NzkJHCL_kvKcgWLnB6JSc7mjpabLrcAd8p_QnLGc1MFgXFMS2K9A/exec';
 
         function shuffleArray(array) {
             const shuffled = [...array];
@@ -573,9 +682,6 @@
             });
         }
 
-        // Stocker les réponses avec leurs textes pour Google Sheet
-        let reponses_affichage = [];
-
         function verifier() {
             const nom = document.getElementById('nom').value.trim();
             const classe = document.getElementById('classe').value;
@@ -589,7 +695,7 @@
             }
 
             let score = 0;
-            reponses_affichage = []; // Réinitialiser
+            reponses_affichage = [];
             const resultsList = document.getElementById('resultsList');
             resultsList.innerHTML = '';
 
@@ -666,72 +772,23 @@
             document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
         }
 
-        function reinitialiser() {
-            document.getElementById('nom').value = '';
-            document.getElementById('classe').value = '';
-            document.getElementById('groupe').value = '';
-            document.getElementById('date').value = '';
-            createQuestions();
-            document.getElementById('results').classList.remove('show');
-            document.getElementById('warning').classList.remove('show');
-            document.getElementById('printBtn').style.display = 'none';
-        }
-
-        document.getElementById('date').valueAsDate = new Date();
-        createQuestions();
-    </script>
-    
-    <script>
-        // Configuration Google Sheets via Apps Script
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzE11AdQGIVMSgOv7NzkJHCL_kvKcgWLnB6JSc7mjpabLrcAd8p_QnLGc1MFgXFMS2K9A/exec';
-        
         function envoyerAuSheet() {
             const nom = document.getElementById('nom').value.trim();
             const classe = document.getElementById('classe').value;
             const groupe = document.getElementById('groupe').value;
             const date = document.getElementById('date').value;
             
-            let score = 0;
-            let reponses = [];
-            
-            randomizedQuestions.forEach((question, index) => {
-                let isCorrect = false;
-                let reponse = userAnswers[index];
-                
-                if (question.type === 'radio') {
-                    isCorrect = userAnswers[index] === question.correct;
-                    reponses.push(reponse || 'Non répondu');
-                } else if (question.type === 'checkbox') {
-                    const answer = userAnswers[index] || [];
-                    isCorrect = JSON.stringify(answer.sort()) === JSON.stringify(question.correct.sort());
-                    reponses.push(Array.isArray(answer) ? answer.join(', ') : 'Non répondu');
-                } else if (question.type === 'text-input') {
-                    const answer = parseFloat(document.getElementById(`q${index}`).value);
-                    isCorrect = Math.abs(answer - question.correct) < 0.1;
-                    reponses.push(answer || 'Non répondu');
-                }
-                
-                if (isCorrect) score++;
-            });
-            
-            const total = randomizedQuestions.length;
-            const note = Math.round((score / total) * 20);
-            const percentage = Math.round((score / total) * 100);
-            
-            // Préparer les données
             const donnees = {
                 nom: nom,
                 classe: classe,
                 groupe: groupe,
                 date: date,
-                score: score,
-                total: total,
-                note: note,
-                pourcentage: percentage,
-                reponses: reponses
+                score: document.getElementById('scoreBox').textContent.split('\n')[0],
+                note: document.getElementById('scoreBox').textContent.split('Note:')[1]?.split('/20')[0] + '/20',
+                pourcentage: document.getElementById('scoreBox').textContent.split('%')[0].split('\n')[1],
+                reponses: reponses_affichage
             };
             
-            // Envoyer à Google Sheets
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
                 body: JSON.stringify(donnees)
@@ -752,6 +809,22 @@
                 alert('⚠️ Erreur lors de l\'envoi. Vérifiez l\'URL du script.');
             });
         }
+
+        function reinitialiser() {
+            document.getElementById('nom').value = '';
+            document.getElementById('classe').value = '';
+            document.getElementById('groupe').value = '';
+            document.getElementById('date').value = '';
+            createQuestions();
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('warning').classList.remove('show');
+            document.getElementById('printBtn').style.display = 'none';
+            document.getElementById('submitBtn').style.display = 'none';
+            document.querySelectorAll('input[type="radio"], input[type="checkbox"], input[type="number"]').forEach(el => {
+                el.disabled = false;
+            });
+            document.querySelector('.btn-primary').disabled = false;
+            document.querySelector('.btn-primary').style.opacity = '1';
+            document.querySelector('.btn-primary').style.cursor = 'pointer';
+        }
     </script>
-</body>
-</html>
