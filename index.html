@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devoir - Unité 1 Environnement Matériel</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+        h1 { 
+            text-align: center; 
+            color: #333; 
+            margin-bottom: 5px;
+            font-size: 28px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+        .header-info {
+            background: linear-gradient(135deg, #ffe5e5 0%, #fff0f0 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #f5576c;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .form-field { display: flex; flex-direction: column; }
+        .form-field label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+        .form-field input, .form-field select {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .form-field input:focus, .form-field select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+        .question-section {
+            background: #fafafa;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #f5576c;
+        }
+        .question-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .question-number {
+            background: #f5576c;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .question-info { flex: 1; }
+        .question-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .question-type {
+            color: #666;
+            font-size: 12px;
+            background: #ffe5e5;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        .options {
+            display: grid;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        .option-label:hover {
+            border-color: #f5576c;
+            background: #fff0f0;
+        }
+        input[type="radio"], input[type="checkbox"] {
+            margin-right: 10px;
+            cursor: pointer;
+            accent-color: #f5576c;
+        }
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: #f5576c;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #e63e53;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .btn-print {
+            background: #28a745;
+            color: white;
+        }
+        .btn-print:hover {
+            background: #218838;
+        }
+        .results {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #f5576c;
+        }
+        .results.show { display: block; }
+        .results h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        .result-item {
+            padding: 15px;
+            margin-bottom: 12px;
+            background: white;
+            border-radius: 6px;
+            border-left: 4px solid #ddd;
+            font-size: 14px;
+        }
+        .result-item.correct {
+            border-left-color: #28a745;
+            background: #f0fff4;
+        }
+        .result-item.incorrect {
+            border-left-color: #dc3545;
+            background: #fff5f5;
+        }
+        .score-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .score-box strong {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .score-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+            font-size: 16px;
+        }
+        .score-details div {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .appreciation {
+            margin-top: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-weight: 600;
+        }
+        .warning.show { display: block; }
+        .ar-text {
+            font-size: 12px;
+            color: #666;
+            font-weight: normal;
+        }
+        @media print {
+            body { background: white; }
+            .button-group { display: none; }
+            .results { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Devoir - Unité 1: Environnement Matériel du Système Informatique</h1>
+        <p class="subtitle">Composants, Périphériques et Conversions d'Unités</p>
+
+        <div class="header-info">
+            <h3 style="color: #333; margin-bottom: 15px;">Informations Personnelles</h3>
+            <div class="info-grid">
+                <div class="form-field">
+                    <label for="nom">Nom complet</label>
+                    <input type="text" id="nom" placeholder="Votre nom et prénom">
+                </div>
+                <div class="form-field">
+                    <label for="classe">Classe</label>
+                    <select id="classe">
+                        <option value="">-- Sélectionner --</option>
+                        <option value="2/1">2/1</option>
+                        <option value="2/2">2/2</option>
+                        <option value="2/3">2/3</option>
+                        <option value="2/4">2/4</option>
+                        <option value="2/5">2/5</option>
+                        <option value="2/6">2/6</option>
+                        <option value="2/7">2/7</option>
+                        <option value="2/8">2/8</option>
+                        <option value="2/9">2/9</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label for="groupe">Groupe</label>
+                    <select id="groupe">
+                        <option value="">-- Sélectionner --</option>
+                        <option value="G1">G1</option>
+                        <option value="G2">G2</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label for="date">Date</label>
+                    <input type="date" id="date">
+                </div>
+            </div>
+        </div>
+
+        <div class="warning" id="warning">Veuillez remplir tous les champs et répondre à toutes les questions avant de valider!</div>
+
+        <div id="questionsContainer"></div>
+
+        <div class="button-group">
+            <button class="btn-primary" onclick="verifier()">Valider mes réponses</button>
+            <button class="btn-secondary" onclick="reinitialiser()">Réinitialiser</button>
+            <button class="btn-print" id="printBtn" style="display:none;" onclick="window.print()">Imprimer</button>
+            <button class="btn-primary" id="submitBtn" style="display:none; background:#28a745;" onclick="envoyerAuSheet()">Envoyer à Google Sheet</button>
+        </div>
+
+        <div class="results" id="results">
+            <h2>Résultats de l'Évaluation</h2>
+            <div id="resultsList"></div>
+            <div class="score-box" id="scoreBox"></div>
+        </div>
+    </div>
+
+    <script>
+        const questionsDB = [
+            {
+                id: 'cm',
+                text: 'Quelle est la fonction de la Carte Mère? <span class="ar-text">(ما هي وظيفة اللوحة الأم؟)</span>',
+                type: 'radio',
+                options: [
+                    { value: 'correct', text: 'Assurer la connexion entre tous les éléments essentiels (ضمان الاتصال بين جميع العناصر الأساسية)' },
+                    { value: 'incorrect1', text: 'Traiter les données et exécuter les instructions (معالجة البيانات وتنفيذ التعليمات)' },
+                    { value: 'incorrect2', text: 'Convertir les données en images (تحويل البيانات إلى صور)' },
+                    { value: 'incorrect3', text: 'Fournir l\'électricité (توفير الكهرباء)' }
+                ],
+                correct: 'correct'
+            },
+            {
+                id: 'cpu',
+                text: 'Quelle est la fonction du Processeur (CPU)? <span class="ar-text">(ما هي وظيفة المعالج؟)</span>',
+                type: 'radio',
+                options: [
+                    { value: 'incorrect1', text: 'Un périphérique de sortie (جهاز إخراج)' },
+                    { value: 'correct', text: 'Exécuter les instructions et traiter les données - le cerveau de l\'ordinateur (تنفيذ التعليمات ومعالجة البيانات - عقل الحاسوب)' },
+                    { value: 'incorrect2', text: 'Un périphérique de stockage (جهاز تخزين)' },
+                    { value: 'incorrect3', text: 'Un périphérique d\'entrée (جهاز إدخال)' }
+                ],
+                correct: 'correct'
+            },
+            {
+                id: 'ram',
+                text: 'Quelle est la fonction de la RAM? <span class="ar-text">(ما هي وظيفة الذاكرة العشوائية؟)</span>',
+                type: 'radio',
+                options: [
+                    { value: 'incorrect1', text: 'Stocker les données définitivement (تخزين البيانات بشكل دائم)' },
+                    { value: 'correct', text: 'Stocker de manière temporaire les données lors du travail (تخزين البيانات مؤقتاً أثناء العمل)' },
+                    { value: 'incorrect2', text: 'Convertir les données en images (تحويل البيانات إلى صور)' },
+                    { value: 'incorrect3', text: 'Connecter l\'ordinateur au réseau (توصيل الحاسوب بالشبكة)' }
+                ],
+                correct: 'correct'
+            },
+            {
+                id: 'disk',
+                text: 'Quelle est la fonction du Disque Dur/SSD? <span class="ar-text">(ما هي وظيفة القرص الصلب؟)</span>',
+                type: 'radio',
+                options: [
+                    { value: 'correct', text: 'Stocker les données et les conserver même en l\'absence d\'alimentation électrique (تخزين البيانات والاحتفاظ بها حتى في غياب التيار)' },
+                    { value: 'incorrect1', text: 'Stocker temporairement lors du travail (تخزين مؤقت أثناء العمل)' },
+                    { value: 'incorrect2', text: 'Traiter les calculs (معالجة الحسابات)' },
+                    { value: 'incorrect3', text: 'Afficher les images (عرض الصور)' }
+                ],
+                correct: 'correct'
+            },
+            {
+                id: 'gpu',
+                text: 'Quelle est la fonction de la Carte Graphique? <span class="ar-text">(ما هي وظيفة بطاقة الرسومات؟)</span>',
+                type: 'radio',
+                options: [
+                    { value: 'incorrect1', text: 'Traiter les calculs mathématiques (معالجة الحسابات الرياضية)' },
+                    { value: 'correct', text: 'Convertir les données numériques en images affichables sur un écran (تحويل البيانات إلى صور على الشاشة)' },
+                    { value: 'incorrect2', text: 'Gérer la connexion réseau (إدارة الاتصال بالشبكة)' },
+                    { value: 'incorrect3', text: 'Fournir l\'électricité (توفير الكهرباء)' }
+                ],
+                correct: 'correct'
+            },
+            {
+                id: 'net',
+                text: 'Quelle est la fonction de la Carte Réseau? <span class="ar-text">(ما هي وظيفة بطاقة الشبكة؟)</span>',
+                type: 'radio',
+                options: [
+                    { value: 'incorrect1', text: 'Afficher les images à l\'écran (عرض الصور على الشاشة)' },
+                    { value: 'incorrect2', text: 'Stocker les données (تخزين البيانات)' },
+                    { value: 'correct', text: 'Permettre de connecter l\'ordinateur à d\'autres ordinateurs (السماح بتوصيل الحاسوب بأجهزة أخرى)' },
+                    { value: 'incorrect3', text: 'Traiter les images (معالجة الصور)' }
+                ],
+                correct: 'correct'
+            },
+            {
+                id: 'psu',
+                text: 'Quelle est la fonction de la Boîte d\'Alimentation? <span class="ar-text">(ما هي وظيفة وحدة إمداد الطاقة؟)</span>',
+                type: 'radio',
+                options: [
+                    { value: 'incorrect1', text: 'Traiter les données (معالجة البيانات)' },
+                    { value: 'incorrect2', text: 'Afficher les informations (عرض المعلومات)' },
+                    { value: 'correct', text: 'Fournir du courant électrique à l\'ensemble des composants (توفير التيار الكهربائي لجميع المكونات)' },
+                    { value: 'incorrect3', text: 'Connecter au réseau (الاتصال بالشبكة)' }
+                ],
+                correct: 'correct'
+            },
+            {
+                id: 'wifi',
+                text: 'Quelle est la fonction de la Carte WIFI? <span class="ar-text">(ما هي وظيفة بطاقة الواي فاي؟)</span>',
+                type: 'radio',
+                options: [
+                    { value: 'correct', text: 'Permettre la connexion sans fil au réseau (السماح بالاتصال اللاسلكي بالشبكة)' },
+                    { value: 'incorrect1', text: 'Stocker les données définitivement (تخزين البيانات بشكل دائم)' },
+                    { value: 'incorrect2', text: 'Convertir les données en images (تحويل البيانات إلى صور)' },
+                    { value: 'incorrect3', text: 'Fournir l\'électricité (توفير الكهرباء)' }
+                ],
+                correct: 'correct'
+            },
+            {
+                id: 'carte-son',
+                text: 'Quelle est la fonction de la Carte Son? <span class="ar-text">(ما هي وظيفة بطاقة الصوت؟)</span>',
+                type: 'radio',
+                options: [
+                    { value: 'correct', text: 'Gérer le son et l\'audio de l\'ordinateur (إدارة الصوت والصوتيات للحاسوب)' },
+                    { value: 'incorrect1', text: 'Afficher les images (عرض الصور)' },
+                    { value: 'incorrect2', text: 'Stocker les données (تخزين البيانات)' },
+                    { value: 'incorrect3', text: 'Connecter au réseau (الاتصال بالشبكة)' }
+                ],
+                correct: 'correct'
+            },
+            {
+                id: 'periph',
+                text: 'Lesquels sont des périphériques d\'entrée? <span class="ar-text">(أي من هذه أجهزة إدخال؟)</span>',
+                type: 'checkbox',
+                options: [
+                    { value: 'clavier', text: 'Clavier (لوحة المفاتيح)' },
+                    { value: 'souris', text: 'Souris (الفأرة)' },
+                    { value: 'ecran', text: 'Écran (الشاشة)' },
+                    { value: 'microphone', text: 'Microphone (الميكروفون)' }
+                ],
+                correct: ['clavier', 'souris', 'microphone']
+            },
+            {
+                id: 'sortie',
+                text: 'Lesquels sont des périphériques de sortie? <span class="ar-text">(أي من هذه أجهزة إخراج؟)</span>',
+                type: 'checkbox',
+                options: [
+                    { value: 'ecran', text: 'Écran/Moniteur (الشاشة)' },
+                    { value: 'imprimante', text: 'Imprimante (الطابعة)' },
+                    { value: 'hp', text: 'Haut-parleurs (مكبرات الصوت)' },
+                    { value: 'clavier', text: 'Clavier (لوحة المفاتيح)' }
+                ],
+                correct: ['ecran', 'imprimante', 'hp']
+            },
+            {
+                id: 'stockage',
+                text: 'Lesquels sont des périphériques de stockage? <span class="ar-text">(أي من هذه أجهزة تخزين؟)</span>',
+                type: 'checkbox',
+                options: [
+                    { value: 'usb', text: 'Clé USB (مفتاح USB)' },
+                    { value: 'cd', text: 'CD-ROM' },
+                    { value: 'dvd', text: 'DVD' },
+                    { value: 'ecran', text: 'Écran (الشاشة)' }
+                ],
+                correct: ['usb', 'cd', 'dvd']
+            },
+            {
+                id: 'conv1',
+                text: 'Convertissez: 12 Mo = ? Ko <span class="ar-text">(12 ميجابايت = ؟ كيلوبايت)</span>',
+                type: 'text-input',
+                correct: 12000
+            },
+            {
+                id: 'conv2',
+                text: 'Convertissez: 20 Go = ? Mo <span class="ar-text">(20 جيجابايت = ؟ ميجابايت)</span>',
+                type: 'text-input',
+                correct: 20000
+            },
+            {
+                id: 'conv3',
+                text: 'Convertissez: 312 Octet = ? Bit <span class="ar-text">(312 بايت = ؟ بت)</span>',
+                type: 'text-input',
+                correct: 2496
+            },
+            {
+                id: 'conv4',
+                text: 'Convertissez: 4 To = ? Ko <span class="ar-text">(4 تيرابايت = ؟ كيلوبايت)</span>',
+                type: 'text-input',
+                correct: 4000000000
+            },
+            {
+                id: 'conv5',
+                text: 'Convertissez: 100 Bit = ? Octet <span class="ar-text">(100 بت = ؟ بايت)</span>',
+                type: 'text-input',
+                correct: 12.5
+            }
+        ];
+
+        let randomizedQuestions = [];
+        let userAnswers = {};
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function createQuestions() {
+            randomizedQuestions = shuffleArray(questionsDB);
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '';
+            userAnswers = {};
+
+            randomizedQuestions.forEach((question, index) => {
+                const section = document.createElement('div');
+                section.className = 'question-section';
+                
+                let html = `
+                    <div class="question-header">
+                        <div class="question-number">${index + 1}</div>
+                        <div class="question-info">
+                            <div class="question-text">${question.text}</div>
+                            <div class="question-type">${question.type === 'checkbox' ? 'Plusieurs réponses' : question.type === 'text-input' ? 'Calcul' : 'Choix unique'}</div>
+                        </div>
+                    </div>
+                `;
+
+                if (question.type === 'radio') {
+                    html += '<div class="options">';
+                    question.options.forEach(opt => {
+                        html += `
+                            <label class="option-label">
+                                <input type="radio" name="q${index}" value="${opt.value}"> ${opt.text}
+                            </label>
+                        `;
+                    });
+                    html += '</div>';
+                } else if (question.type === 'checkbox') {
+                    html += '<div class="options">';
+                    question.options.forEach(opt => {
+                        html += `
+                            <label class="option-label">
+                                <input type="checkbox" name="q${index}" value="${opt.value}"> ${opt.text}
+                            </label>
+                        `;
+                    });
+                    html += '</div>';
+                } else if (question.type === 'text-input') {
+                    html += `
+                        <div style="margin-top: 12px;">
+                            <input type="number" id="q${index}" placeholder="Votre réponse" style="width: 100%; max-width: 300px; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 14px;">
+                        </div>
+                    `;
+                }
+
+                section.innerHTML = html;
+                container.appendChild(section);
+                userAnswers[index] = null;
+            });
+
+            document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => {
+                el.addEventListener('change', function() {
+                    const index = parseInt(this.name.substring(1));
+                    if (randomizedQuestions[index].type === 'checkbox') {
+                        userAnswers[index] = Array.from(document.querySelectorAll(`input[name="q${index}"]:checked`)).map(e => e.value);
+                    } else {
+                        userAnswers[index] = this.value;
+                    }
+                });
+            });
+        }
+
+        // Stocker les réponses avec leurs textes pour Google Sheet
+        let reponses_affichage = [];
+
+        function verifier() {
+            const nom = document.getElementById('nom').value.trim();
+            const classe = document.getElementById('classe').value;
+            const groupe = document.getElementById('groupe').value;
+            const date = document.getElementById('date').value;
+
+            if (!nom || !classe || !groupe || !date) {
+                document.getElementById('warning').classList.add('show');
+                setTimeout(() => document.getElementById('warning').classList.remove('show'), 4000);
+                return;
+            }
+
+            let score = 0;
+            reponses_affichage = []; // Réinitialiser
+            const resultsList = document.getElementById('resultsList');
+            resultsList.innerHTML = '';
+
+            randomizedQuestions.forEach((question, index) => {
+                let isCorrect = false;
+                let reponse_texte = '';
+
+                if (question.type === 'radio') {
+                    isCorrect = userAnswers[index] === question.correct;
+                    const option = question.options.find(o => o.value === userAnswers[index]);
+                    reponse_texte = option ? option.text.split('(')[0].trim() : 'Non répondu';
+                } else if (question.type === 'checkbox') {
+                    const answer = userAnswers[index] || [];
+                    isCorrect = JSON.stringify(answer.sort()) === JSON.stringify(question.correct.sort());
+                    if (answer.length > 0) {
+                        const textes = answer.map(val => {
+                            const opt = question.options.find(o => o.value === val);
+                            return opt ? opt.text.split('(')[0].trim() : val;
+                        });
+                        reponse_texte = textes.join(' | ');
+                    } else {
+                        reponse_texte = 'Non répondu';
+                    }
+                } else if (question.type === 'text-input') {
+                    const answer = parseFloat(document.getElementById(`q${index}`).value);
+                    isCorrect = Math.abs(answer - question.correct) < 0.1;
+                    reponse_texte = answer ? answer.toString() : 'Non répondu';
+                }
+
+                reponses_affichage.push(reponse_texte);
+                if (isCorrect) score++;
+
+                const item = document.createElement('div');
+                item.className = `result-item ${isCorrect ? 'correct' : 'incorrect'}`;
+                item.innerHTML = `<strong>Q${index + 1}: ${isCorrect ? '✓' : '✗'}</strong><br>${question.text.replace(/<span.*?<\/span>/g, '')}<br><em style="color: #666;">Réponse: ${reponse_texte}</em>`;
+                resultsList.appendChild(item);
+            });
+
+            const total = randomizedQuestions.length;
+            const percentage = Math.round((score / total) * 100);
+            const note = Math.round((score / total) * 20);
+
+            let appreciation = '';
+            if (note >= 18) appreciation = 'Excellent!';
+            else if (note >= 16) appreciation = 'Très bien!';
+            else if (note >= 14) appreciation = 'Bien!';
+            else if (note >= 12) appreciation = 'Satisfaisant!';
+            else if (note >= 10) appreciation = 'Passable';
+            else appreciation = 'À améliorer';
+
+            document.getElementById('scoreBox').innerHTML = `
+                <strong>${score}/${total}</strong><br>
+                <span style="font-size: 24px; font-weight: bold;">${percentage}%</span><br>
+                <div class="score-details">
+                    <div>Note: <strong>${note}/20</strong></div>
+                    <div class="appreciation">${appreciation}</div>
+                </div>
+            `;
+
+            document.getElementById('results').classList.add('show');
+            document.getElementById('printBtn').style.display = 'inline-block';
+            document.getElementById('submitBtn').style.display = 'inline-block';
+            
+            // Désactiver tous les inputs après vérification
+            document.querySelectorAll('input[type="radio"], input[type="checkbox"], input[type="number"]').forEach(el => {
+                el.disabled = true;
+            });
+            
+            // Désactiver le bouton Valider
+            event.target.disabled = true;
+            event.target.style.opacity = '0.6';
+            event.target.style.cursor = 'not-allowed';
+            
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function reinitialiser() {
+            document.getElementById('nom').value = '';
+            document.getElementById('classe').value = '';
+            document.getElementById('groupe').value = '';
+            document.getElementById('date').value = '';
+            createQuestions();
+            document.getElementById('results').classList.remove('show');
+            document.getElementById('warning').classList.remove('show');
+            document.getElementById('printBtn').style.display = 'none';
+        }
+
+        document.getElementById('date').valueAsDate = new Date();
+        createQuestions();
+    </script>
+    
+    <script>
+        // Configuration Google Sheets via Apps Script
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzE11AdQGIVMSgOv7NzkJHCL_kvKcgWLnB6JSc7mjpabLrcAd8p_QnLGc1MFgXFMS2K9A/exec';
+        
+        function envoyerAuSheet() {
+            const nom = document.getElementById('nom').value.trim();
+            const classe = document.getElementById('classe').value;
+            const groupe = document.getElementById('groupe').value;
+            const date = document.getElementById('date').value;
+            
+            let score = 0;
+            let reponses = [];
+            
+            randomizedQuestions.forEach((question, index) => {
+                let isCorrect = false;
+                let reponse = userAnswers[index];
+                
+                if (question.type === 'radio') {
+                    isCorrect = userAnswers[index] === question.correct;
+                    reponses.push(reponse || 'Non répondu');
+                } else if (question.type === 'checkbox') {
+                    const answer = userAnswers[index] || [];
+                    isCorrect = JSON.stringify(answer.sort()) === JSON.stringify(question.correct.sort());
+                    reponses.push(Array.isArray(answer) ? answer.join(', ') : 'Non répondu');
+                } else if (question.type === 'text-input') {
+                    const answer = parseFloat(document.getElementById(`q${index}`).value);
+                    isCorrect = Math.abs(answer - question.correct) < 0.1;
+                    reponses.push(answer || 'Non répondu');
+                }
+                
+                if (isCorrect) score++;
+            });
+            
+            const total = randomizedQuestions.length;
+            const note = Math.round((score / total) * 20);
+            const percentage = Math.round((score / total) * 100);
+            
+            // Préparer les données
+            const donnees = {
+                nom: nom,
+                classe: classe,
+                groupe: groupe,
+                date: date,
+                score: score,
+                total: total,
+                note: note,
+                pourcentage: percentage,
+                reponses: reponses
+            };
+            
+            // Envoyer à Google Sheets
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(donnees)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert('✅ Réponses envoyées avec succès à Google Sheet!');
+                    document.getElementById('submitBtn').style.background = '#20c997';
+                    document.getElementById('submitBtn').textContent = '✓ Envoyé';
+                    document.getElementById('submitBtn').disabled = true;
+                } else {
+                    alert('⚠️ Erreur: ' + result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('⚠️ Erreur lors de l\'envoi. Vérifiez l\'URL du script.');
+            });
+        }
+    </script>
+</body>
+</html>
