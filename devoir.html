@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assembler un PC - Devoir Informatique</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8f0f7 50%, #d8e8f2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(100, 200, 255, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(150, 220, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 5px;
+            color: #1e5ba8;
+            text-shadow: 0 2px 4px rgba(30, 91, 168, 0.1);
+        }
+
+        .header p {
+            font-size: 1em;
+            color: #2d7ab8;
+            opacity: 0.95;
+        }
+
+        .student-info {
+            background: white;
+            border: 2px solid #64c8ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 20px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .info-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #1e5ba8;
+            font-size: 0.9em;
+        }
+
+        .info-input, .info-select {
+            padding: 10px;
+            border: 2px solid #64c8ff;
+            border-radius: 5px;
+            font-size: 1em;
+            background: white;
+            color: #333;
+        }
+
+        .info-input:focus, .info-select:focus {
+            outline: none;
+            border-color: #1e5ba8;
+            box-shadow: 0 0 10px rgba(45, 122, 184, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .student-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section {
+            background: white;
+            border: 3px solid #64c8ff;
+            border-radius: 15px;
+            padding: 30px;
+            animation: fadeInUp 0.8s ease;
+            box-shadow: 0 4px 15px rgba(100, 200, 255, 0.2);
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .section:hover {
+            border-color: #2d7ab8;
+            box-shadow: 0 8px 25px rgba(45, 122, 184, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            color: #1e5ba8;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 30px;
+            background: linear-gradient(180deg, #2d7ab8 0%, #64c8ff 100%);
+            border-radius: 2px;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #e8f4ff 0%, #f0f7ff 100%);
+            border-left: 4px solid #2d7ab8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            color: #1e5ba8;
+        }
+
+        .question-container {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e8f4ff 100%);
+            border: 2px solid #64c8ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .question-text {
+            color: #1e5ba8;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+
+        .question-ar {
+            color: #2d7ab8;
+            direction: rtl;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #e8f0f7;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-label:hover {
+            border-color: #64c8ff;
+            background: #f5f7fa;
+        }
+
+        .option-label input[type="radio"],
+        .option-label input[type="checkbox"] {
+            margin-right: 10px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .option-label input[type="radio"]:checked + span,
+        .option-label input[type="checkbox"]:checked + span {
+            color: #1e5ba8;
+            font-weight: 600;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #64c8ff;
+            border-radius: 8px;
+            background: white;
+            color: #333;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #1e5ba8;
+            box-shadow: 0 0 10px rgba(45, 122, 184, 0.2);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #2d7ab8 0%, #64c8ff 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(45, 122, 184, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(45, 122, 184, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f5f7fa;
+            color: #2d7ab8;
+            border: 2px solid #2d7ab8;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e8f0f7;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #e8f4ff 0%, #f0f7ff 100%);
+            border: 2px solid #2d7ab8;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .score-display.show {
+            display: block;
+        }
+
+        .score-display h2 {
+            color: #1e5ba8;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .score-value {
+            font-size: 3em;
+            font-weight: bold;
+            color: #2d7ab8;
+            margin: 20px 0;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media print {
+            body::before {
+                display: none;
+            }
+            .button-group {
+                display: none;
+            }
+            .student-info {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>💻 Assembler un PC</h1>
+            <p>Devoir Informatique - Configuration d'Unité Centrale</p>
+        </div>
+
+        <!-- Student Info -->
+        <div class="student-info">
+            <div class="info-field">
+                <label class="info-label">Nom Complet / الاسم الكامل</label>
+                <input type="text" class="info-input" id="studentName" placeholder="Prénom Nom">
+            </div>
+            <div class="info-field">
+                <label class="info-label">Classe / الفصل</label>
+                <select class="info-select" id="studentClass">
+                    <option value="">-- Sélectionne --</option>
+                    <option value="2/1">2/1</option>
+                    <option value="2/2">2/2</option>
+                    <option value="2/3">2/3</option>
+                    <option value="2/4">2/4</option>
+                    <option value="2/5">2/5</option>
+                    <option value="2/6">2/6</option>
+                    <option value="2/7">2/7</option>
+                    <option value="2/8">2/8</option>
+                    <option value="2/9">2/9</option>
+                </select>
+            </div>
+            <div class="info-field">
+                <label class="info-label">Groupe / المجموعة</label>
+                <select class="info-select" id="studentGroup">
+                    <option value="">-- Sélectionne --</option>
+                    <option value="G1">G1</option>
+                    <option value="G2">G2</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Context -->
+        <div class="section">
+            <div class="section-title">📋 Contexte - Situation Réelle</div>
+            <div class="info-box">
+                <strong>Français:</strong> Vous êtes responsable informatique dans une PME. L'entreprise souhaite acheter 5 nouveaux postes de travail pour son département de conception graphique. Vous devez assembler et configurer ces ordinateurs en sélectionnant les bons composants. Pour cela, vous devez maîtriser parfaitement l'identification des éléments internes et externes, leurs fonctions, et les interconnexions.
+            </div>
+            <div class="info-box">
+                <strong>العربية:</strong> أنت مسؤول تكنولوجيا المعلومات في شركة صغيرة. تريد الشركة شراء 5 محطات عمل جديدة لقسم التصميم الجرافيكي. يجب عليك تجميع وتكوين هذه الحواسيب باختيار المكونات الصحيحة. لهذا، يجب أن تتقن تحديد العناصر الداخلية والخارجية ووظائفها والترابطات بينها.
+            </div>
+        </div>
+
+        <!-- Section 1: Composants Internes -->
+        <div class="section">
+            <div class="section-title">🔧 Composants Internes (Unité Centrale)</div>
+            <div id="internalSection"></div>
+        </div>
+
+        <!-- Section 2: Matching -->
+        <div class="section">
+            <div class="section-title">🔗 Appariement Composant-Fonction</div>
+            <div id="matchingSection"></div>
+        </div>
+
+        <!-- Section 3: Classification -->
+        <div class="section">
+            <div class="section-title">📂 Classification des Composants</div>
+            <div id="classificationSection"></div>
+        </div>
+
+        <!-- Section 4: Composants Externes -->
+        <div class="section">
+            <div class="section-title">🖱️ Composants Externes (Périphériques)</div>
+            <div id="externalSection"></div>
+        </div>
+
+        <!-- Score Display -->
+        <div class="score-display" id="scoreDisplay">
+            <h2>📊 Résultat Final</h2>
+            <div class="score-value" id="scoreValue">0 / 20</div>
+            <p id="scoreMessage"></p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="section">
+            <div class="button-group">
+                <button class="btn btn-primary" id="submitBtn" onclick="submitAndCorrect()">✅ Vérifier et Corriger</button>
+                <button class="btn btn-secondary" id="resetBtn" onclick="resetForm()">🔄 Recommencer</button>
+                <button class="btn btn-secondary" id="printBtn" onclick="window.print()">🖨️ Imprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 'q1',
+                type: 'radio',
+                num: '1️⃣',
+                text: 'Quel est le rôle principal du CPU ?',
+                ar: 'ما هو الدور الرئيسي للمعالج المركزي؟',
+                options: [
+                    { text: 'Exécuter les instructions du système', ar: 'تنفيذ تعليمات النظام', correct: true },
+                    { text: 'Afficher les images', ar: 'عرض الصور', correct: false },
+                    { text: 'Stocker les données', ar: 'تخزين البيانات', correct: false },
+                    { text: 'Connecter à Internet', ar: 'الاتصال بالإنترنت', correct: false }
+                ],
+                points: 1
+            },
+            {
+                id: 'q2',
+                type: 'radio',
+                num: '2️⃣',
+                text: 'Quel composant traite les images et vidéos ?',
+                ar: 'أي مكون يعالج الصور والفيديو؟',
+                options: [
+                    { text: 'GPU (Carte Graphique)', ar: 'GPU (بطاقة الرسومات)', correct: true },
+                    { text: 'CPU', ar: 'المعالج المركزي', correct: false },
+                    { text: 'RAM', ar: 'الذاكرة العشوائية', correct: false },
+                    { text: 'Carte Mère', ar: 'اللوحة الأم', correct: false }
+                ],
+                points: 1
+            },
+            {
+                id: 'q3',
+                type: 'radio',
+                num: '3️⃣',
+                text: 'Quelle est la fonction de la RAM ?',
+                ar: 'ما وظيفة الذاكرة العشوائية؟',
+                options: [
+                    { text: 'Stocker temporairement les données en cours d\'utilisation', ar: 'تخزين البيانات مؤقتاً أثناء الاستخدام', correct: true },
+                    { text: 'Stocker les données à long terme', ar: 'تخزين البيانات على المدى الطويل', correct: false },
+                    { text: 'Alimenter le système', ar: 'تزويد النظام بالطاقة', correct: false },
+                    { text: 'Afficher l\'image', ar: 'عرض الصورة', correct: false }
+                ],
+                points: 1
+            },
+            {
+                id: 'q4',
+                type: 'radio',
+                num: '4️⃣',
+                text: 'Le rôle principal de la Carte Mère est :',
+                ar: 'الدور الرئيسي للوحة الأم هو:',
+                options: [
+                    { text: 'Relier tous les composants entre eux', ar: 'ربط جميع المكونات ببعضها البعض', correct: true },
+                    { text: 'Traiter les calculs', ar: 'معالجة العمليات الحسابية', correct: false },
+                    { text: 'Refroidir le système', ar: 'تبريد جهاز الكمبيوتر', correct: false },
+                    { text: 'Amplifier le signal WiFi', ar: 'تضخيم إشارة الواي فاي', correct: false }
+                ],
+                points: 1
+            },
+            {
+                id: 'q5',
+                type: 'radio',
+                num: '5️⃣',
+                text: 'Quel composant alimente tous les éléments de l\'ordinateur ?',
+                ar: 'أي مكون يزود بالطاقة جميع عناصر الكمبيوتر؟',
+                options: [
+                    { text: 'PSU (Alimentation)', ar: 'PSU (مزود الطاقة)', correct: true },
+                    { text: 'RAM', ar: 'الذاكرة العشوائية', correct: false },
+                    { text: 'Carte Graphique', ar: 'بطاقة الرسومات', correct: false },
+                    { text: 'Disque SSD', ar: 'محرك الحالة الصلبة', correct: false }
+                ],
+                points: 1
+            },
+            {
+                id: 'q6',
+                type: 'radio',
+                num: '6️⃣',
+                text: 'La WiFi Card permet de :',
+                ar: 'تسمح بطاقة الواي فاي بـ:',
+                options: [
+                    { text: 'Se connecter à Internet sans fil', ar: 'الاتصال بالإنترنت لاسلكياً', correct: true },
+                    { text: 'Traiter les images', ar: 'معالجة الصور', correct: false },
+                    { text: 'Stocker des données', ar: 'تخزين البيانات', correct: false },
+                    { text: 'Refroidir le système', ar: 'تبريد جهاز الكمبيوتر', correct: false }
+                ],
+                points: 1
+            },
+            {
+                id: 'q7',
+                type: 'matching',
+                num: '7️⃣',
+                text: 'Apparie chaque périphérique avec l\'action qu\'il permet :',
+                ar: 'اربط كل جهاز طرفي بالإجراء الذي يسمح به:',
+                pairs: [
+                    { 
+                        left: 'Clavier / لوحة المفاتيح',
+                        options: ['Entrer du texte et des commandes / إدخال النص والأوامر', 'Contrôler le curseur / التحكم في المؤشر', 'Afficher l\'image / عرض الصورة', 'Restituer le son / إعادة إنتاج الصوت', 'Imprimer les documents / طباعة المستندات', 'Transférer les données / نقل البيانات'],
+                        correct: 0
+                    },
+                    { 
+                        left: 'Souris / الفأرة',
+                        options: ['Entrer du texte et des commandes / إدخال النص والأوامر', 'Contrôler le curseur / التحكم في المؤشر', 'Afficher l\'image / عرض الصورة', 'Restituer le son / إعادة إنتاج الصوت', 'Imprimer les documents / طباعة المستندات', 'Transférer les données / نقل البيانات'],
+                        correct: 1
+                    },
+                    { 
+                        left: 'Écran / الشاشة',
+                        options: ['Entrer du texte et des commandes / إدخال النص والأوامر', 'Contrôler le curseur / التحكم في المؤشر', 'Afficher l\'image / عرض الصورة', 'Restituer le son / إعادة إنتاج الصوت', 'Imprimer les documents / طباعة المستندات', 'Transférer les données / نقل البيانات'],
+                        correct: 2
+                    },
+                    { 
+                        left: 'Casque / سماعات الرأس',
+                        options: ['Entrer du texte et des commandes / إدخال النص والأوامر', 'Contrôler le curseur / التحكم في المؤشر', 'Afficher l\'image / عرض الصورة', 'Restituer le son / إعادة إنتاج الصوت', 'Imprimer les documents / طباعة المستندات', 'Transférer les données / نقل البيانات'],
+                        correct: 3
+                    },
+                    { 
+                        left: 'Imprimante / الطابعة',
+                        options: ['Entrer du texte et des commandes / إدخال النص والأوامر', 'Contrôler le curseur / التحكم في المؤشر', 'Afficher l\'image / عرض الصورة', 'Restituer le son / إعادة إنتاج الصوت', 'Imprimer les documents / طباعة المستندات', 'Transférer les données / نقل البيانات'],
+                        correct: 4
+                    },
+                    { 
+                        left: 'Clé USB / مفتاح يو إس بي',
+                        options: ['Entrer du texte et des commandes / إدخال النص والأوامر', 'Contrôler le curseur / التحكم في المؤشر', 'Afficher l\'image / عرض الصورة', 'Restituer le son / إعادة إنتاج الصوت', 'Imprimer les documents / طباعة المستندات', 'Transférer les données / نقل البيانات'],
+                        correct: 5
+                    }
+                ],
+                points: 6
+            },
+            {
+                id: 'q8',
+                type: 'checkbox',
+                num: '8️⃣',
+                text: 'Sélectionne les composants INTERNES :',
+                ar: 'اختر المكونات الداخلية:',
+                options: [
+                    { text: 'CPU', ar: 'معالج مركزي', correct: true },
+                    { text: 'Clavier', ar: 'لوحة المفاتيح', correct: false },
+                    { text: 'GPU', ar: 'بطاقة الرسومات', correct: true },
+                    { text: 'Souris', ar: 'الفأرة', correct: false },
+                    { text: 'RAM', ar: 'ذاكرة عشوائية', correct: true },
+                    { text: 'Écran', ar: 'الشاشة', correct: false },
+                    { text: 'PSU', ar: 'مزود الطاقة', correct: true },
+                    { text: 'Casque', ar: 'سماعات الرأس', correct: false },
+                    { text: 'WiFi Card', ar: 'بطاقة الواي فاي', correct: true },
+                    { text: 'Imprimante', ar: 'الطابعة', correct: false }
+                ],
+                points: 5
+            },
+            {
+                id: 'q9',
+                type: 'radio',
+                num: '9️⃣',
+                text: 'Quel composant dépend principalement du GPU pour fonctionner ?',
+                ar: 'أي مكون يعتمد بشكل أساسي على بطاقة الرسومات؟',
+                options: [
+                    { text: 'L\'Écran', ar: 'الشاشة', correct: true },
+                    { text: 'La Souris', ar: 'الفأرة', correct: false },
+                    { text: 'L\'Imprimante', ar: 'الطابعة', correct: false },
+                    { text: 'Le Clavier', ar: 'لوحة المفاتيح', correct: false }
+                ],
+                points: 1
+            },
+            {
+                id: 'q10',
+                type: 'radio',
+                num: '🔟',
+                text: 'L\'ordinateur ne démarre pas. Que vérifies-tu en premier ?',
+                ar: 'جهاز الكمبيوتر لا يبدأ التشغيل. ماذا تتحقق أولاً؟',
+                options: [
+                    { text: 'La PSU (alimentation) est-elle branchée et allumée ?', ar: 'هل مزود الطاقة موصول وقيد التشغيل؟', correct: true },
+                    { text: 'Le GPU fonctionne-t-il correctement ?', ar: 'هل تعمل بطاقة الرسومات بشكل صحيح؟', correct: false },
+                    { text: 'La souris répond-elle ?', ar: 'هل تستجيب الفأرة؟', correct: false },
+                    { text: 'L\'écran est-il allumé ?', ar: 'هل الشاشة قيد التشغيل؟', correct: false }
+                ],
+                points: 1
+            },
+            {
+                id: 'q11',
+                type: 'radio',
+                num: '1️⃣1️⃣',
+                text: 'Quel est l\'ordre logique pour assembler un PC ?',
+                ar: 'ما هو الترتيب المنطقي لتجميع جهاز الكمبيوتر؟',
+                options: [
+                    { text: '1. Carte Mère → 2. CPU → 3. RAM → 4. GPU → 5. PSU', ar: '1. اللوحة الأم → 2. المعالج المركزي → 3. الذاكرة العشوائية → 4. بطاقة الرسومات → 5. مزود الطاقة', correct: true },
+                    { text: '1. PSU → 2. GPU → 3. CPU → 4. RAM → 5. Carte Mère', ar: '1. مزود الطاقة → 2. بطاقة الرسومات → 3. المعالج → 4. الذاكرة → اللوحة الأم', correct: false },
+                    { text: '1. RAM → 2. CPU → 3. Carte Mère → 4. GPU → 5. PSU', ar: '1. الذاكرة العشوائية → 2. المعالج المركزي → 3. اللوحة الأم → 4. بطاقة الرسومات → 5. مزود الطاقة', correct: false },
+                    { text: 'N\'importe quel ordre fonctionne', ar: 'أي ترتيب يعمل بشكل صحيح', correct: false }
+                ],
+                points: 1
+            },
+            {
+                id: 'q12',
+                type: 'radio',
+                num: '1️⃣2️⃣',
+                text: 'L\'écran affiche du noir alors que l\'ordinateur fonctionne. Quel est le problème probable ?',
+                ar: 'الشاشة تعرض شاشة سوداء والكمبيوتر يعمل. ما المشكلة المحتملة؟',
+                options: [
+                    { text: 'GPU non connectée correctement à la Carte Mère', ar: 'بطاقة الرسومات غير متصلة بشكل صحيح باللوحة الأم', correct: true },
+                    { text: 'La RAM est défaillante', ar: 'الذاكرة العشوائية معيبة أو تالفة', correct: false },
+                    { text: 'Le CPU est trop chaud', ar: 'المعالج المركزي ساخن جداً', correct: false },
+                    { text: 'La WiFi Card ne fonctionne pas', ar: 'بطاقة الواي فاي لا تعمل بشكل صحيح', correct: false }
+                ],
+                points: 1
+            },
+            {
+                id: 'q13',
+                type: 'radio',
+                num: '1️⃣3️⃣',
+                text: 'Le système devient très lent lors de l\'ouverture de plusieurs applications. Quel composant doit être amélioré ?',
+                ar: 'يصبح النظام بطيئاً جداً عند فتح عدة تطبيقات. أي مكون يجب تحسينه أو ترقيته؟',
+                options: [
+                    { text: 'Augmenter la capacité de la RAM', ar: 'زيادة سعة الذاكرة العشوائية', correct: true },
+                    { text: 'Changer le clavier', ar: 'استبدال لوحة المفاتيح', correct: false },
+                    { text: 'Remplacer l\'écran', ar: 'استبدال الشاشة', correct: false },
+                    { text: 'Changer la WiFi Card', ar: 'تغيير بطاقة الواي فاي', correct: false }
+                ],
+                points: 1
+            },
+            {
+                id: 'q14',
+                type: 'radio',
+                num: '1️⃣4️⃣',
+                text: 'Quel périphérique doit être obligatoirement connecté au GPU ?',
+                ar: 'أي جهاز طرفي يجب توصيله بشكل إلزامي ببطاقة الرسومات؟',
+                options: [
+                    { text: 'L\'Écran', ar: 'الشاشة', correct: true },
+                    { text: 'L\'Imprimante', ar: 'الطابعة', correct: false },
+                    { text: 'La Clé USB', ar: 'مفتاح يو إس بي', correct: false },
+                    { text: 'Le Casque', ar: 'سماعات الرأس', correct: false }
+                ],
+                points: 1
+            },
+            {
+                id: 'q15',
+                type: 'radio',
+                num: '1️⃣5️⃣',
+                text: 'Pourquoi la Carte Mère est-elle appelée "mère" ?',
+                ar: 'لماذا تسمى اللوحة الأم بهذا الاسم؟',
+                options: [
+                    { text: 'Parce qu\'elle relie tous les composants entre eux', ar: 'لأنها تربط جميع المكونات ببعضها البعض', correct: true },
+                    { text: 'Parce qu\'elle est plus grande que les autres', ar: 'لأنها أكبر حجماً من بقية المكونات', correct: false },
+                    { text: 'Parce qu\'elle alimente le système', ar: 'لأنها تزود النظام بالطاقة الكهربائية', correct: false },
+                    { text: 'Parce qu\'elle affiche les images', ar: 'لأنها تعرض الصور والرسومات', correct: false }
+                ],
+                points: 1
+            },
+            {
+                id: 'q16',
+                type: 'radio',
+                num: '1️⃣6️⃣',
+                text: 'Un ordinateur sans GPU peut-il fonctionner ?',
+                ar: 'هل يمكن لجهاز كمبيوتر أن يعمل بدون بطاقة رسومات منفصلة؟',
+                options: [
+                    { text: 'Oui, si le CPU a un GPU intégré', ar: 'نعم، إذا كان المعالج المركزي يحتوي على معالج رسومات مدمج', correct: true },
+                    { text: 'Non, c\'est impossible', ar: 'لا، من المستحيل تماماً', correct: false },
+                    { text: 'Oui, mais sans affichage', ar: 'نعم، لكن بدون شاشة عرض', correct: false },
+                    { text: 'Non, le CPU remplace le GPU', ar: 'لا، المعالج المركزي لا يحل محل بطاقة الرسومات', correct: false }
+                ],
+                points: 1
+            },
+            {
+                id: 'q17',
+                type: 'radio',
+                num: '1️⃣7️⃣',
+                text: 'Quel périphérique est INDISPENSABLE pour assembler un nouveau PC ?',
+                ar: 'أي جهاز طرفي ضروري بشكل حتمي لتجميع وتكوين جهاز كمبيوتر جديد؟',
+                options: [
+                    { text: 'Écran + Clavier + Souris (au minimum)', ar: 'الشاشة + لوحة المفاتيح + الفأرة (على الأقل)', correct: true },
+                    { text: 'Imprimante', ar: 'الطابعة', correct: false },
+                    { text: 'Casque', ar: 'سماعات الرأس', correct: false },
+                    { text: 'Clé USB', ar: 'مفتاح يو إس بي', correct: false }
+                ],
+                points: 1
+            },
+            {
+                id: 'q18',
+                type: 'radio',
+                num: '1️⃣8️⃣',
+                text: 'Quel est le composant le plus important pour la performance globale ?',
+                ar: 'ما هو أهم مكون لتحقيق الأداء الكلي العام للنظام؟',
+                options: [
+                    { text: 'CPU, GPU et RAM (travail d\'équipe)', ar: 'المعالج المركزي وبطاقة الرسومات والذاكرة (عمل جماعي)', correct: true },
+                    { text: 'L\'Écran seul', ar: 'الشاشة وحدها', correct: false },
+                    { text: 'La Souris', ar: 'الفأرة', correct: false },
+                    { text: 'La WiFi Card', ar: 'بطاقة الواي فاي', correct: false }
+                ],
+                points: 1
+            }
+        ];
+
+        // Shuffle function
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Initialize questions
+        function initializeQuestions() {
+            // Render without shuffling to keep correct order
+            const internalQuestions = questions.filter(q => ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'].includes(q.id));
+            const matchingQuestions = questions.filter(q => q.id === 'q7');
+            const classificationQuestions = questions.filter(q => q.id === 'q8');
+            const externalQuestions = questions.filter(q => ['q9', 'q10', 'q11', 'q12', 'q13', 'q14', 'q15', 'q16', 'q17', 'q18'].includes(q.id));
+
+            renderQuestions('internalSection', internalQuestions);
+            renderQuestions('matchingSection', matchingQuestions);
+            renderQuestions('classificationSection', classificationQuestions);
+            renderQuestions('externalSection', externalQuestions);
+        }
+
+        // Render questions
+        function renderQuestions(sectionId, sectionQuestions) {
+            const section = document.getElementById(sectionId);
+            section.innerHTML = '';
+
+            sectionQuestions.forEach((q) => {
+                let displayNum = q.num;
+                
+                if (q.type === 'radio') {
+                    const shuffledOptions = shuffle(q.options);
+                    const html = `
+                        <div class="question-container">
+                            <div class="question-text">${displayNum} ${q.text}</div>
+                            <div class="question-ar">${q.ar}</div>
+                            <div class="options">
+                                ${shuffledOptions.map((opt) => `
+                                    <label class="option-label">
+                                        <input type="radio" name="${q.id}" data-correct="${opt.correct}">
+                                        <span>${opt.text}<br><small style="color: #2d7ab8; display: block; margin-top: 3px;">${opt.ar}</small></span>
+                                    </label>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                    section.innerHTML += html;
+                } else if (q.type === 'checkbox') {
+                    const shuffledOptions = shuffle(q.options);
+                    const html = `
+                        <div class="question-container">
+                            <div class="question-text">${displayNum} ${q.text}</div>
+                            <div class="question-ar">${q.ar}</div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                                ${shuffledOptions.map((opt, idx) => `
+                                    <label class="option-label" style="align-items: flex-start;">
+                                        <input type="checkbox" name="${q.id}" value="${idx}" data-text="${opt.text}" data-correct="${opt.correct}" style="margin-top: 3px;">
+                                        <span>${opt.text}<br><small style="color: #2d7ab8; display: block; margin-top: 3px;">${opt.ar}</small></span>
+                                    </label>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                    section.innerHTML += html;
+                } else if (q.type === 'matching') {
+                    let html = `
+                        <div class="question-container">
+                            <div class="question-text">${displayNum} ${q.text}</div>
+                            <div class="question-ar">${q.ar}</div>
+                            <table style="width: 100%; margin-top: 15px; border-collapse: collapse;">
+                                <tr>
+                                    <td style="padding: 10px; border: 2px solid #64c8ff; background: #f0f7ff; font-weight: 600;">Périphériques / الأجهزة</td>
+                                    <td style="padding: 10px; border: 2px solid #64c8ff; background: #f0f7ff; font-weight: 600;">Actions / الإجراءات</td>
+                                </tr>
+                    `;
+                    q.pairs.forEach((pair, idx) => {
+                        html += `
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #e8f0f7;">${pair.left}</td>
+                                <td style="padding: 10px; border: 1px solid #e8f0f7;">
+                                    <select name="q7_${idx}" data-pair="${idx}" data-correct="${pair.correct}">
+                                        <option value="">-- Sélectionne --</option>
+                                        ${pair.options.map((opt, optIdx) => `<option value="${optIdx}">${opt}</option>`).join('')}
+                                    </select>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    html += `</table></div>`;
+                    section.innerHTML += html;
+                }
+            });
+        }
+
+        // Calculate score - DEBUG VERSION
+        function calculateScore() {
+            let totalScore = 0;
+            
+            console.log("=== CALCUL SCORE ===");
+            
+            // Q1-Q6 (6 points)
+            let q1_6_score = 0;
+            for (let i = 1; i <= 6; i++) {
+                const qId = 'q' + i;
+                const selected = document.querySelector(`input[name="${qId}"]:checked`);
+                if (selected && selected.getAttribute('data-correct') === 'true') {
+                    q1_6_score += 1;
+                }
+            }
+            console.log("Q1-Q6: " + q1_6_score + "/6");
+            totalScore += q1_6_score;
+
+            // Q7 (6 points - matching)
+            let q7_score = 0;
+            for (let i = 0; i < 6; i++) {
+                const select = document.querySelector(`select[name="q7_${i}"]`);
+                if (select) {
+                    const correct = parseInt(select.getAttribute('data-correct'));
+                    const selected = parseInt(select.value);
+                    if (select.value !== '' && selected === correct) {
+                        q7_score += 1;
+                    }
+                }
+            }
+            console.log("Q7: " + q7_score + "/6");
+            totalScore += q7_score;
+
+            // Q8 (3 points - checkboxes) - CORRECTED
+            let q8_correct = 0;
+            const checkboxes = document.querySelectorAll('input[name="q8"]');
+            console.log("Nombre de checkboxes trouvées: " + checkboxes.length);
+            
+            checkboxes.forEach((checkbox, idx) => {
+                const isCorrectAttr = checkbox.getAttribute('data-correct');
+                const isCorrect = isCorrectAttr === 'true';
+                const isChecked = checkbox.checked;
+                const text = checkbox.getAttribute('data-text');
+                
+                console.log(`  CB ${idx}: text="${text}", correct=${isCorrect}, checked=${isChecked}`);
+                
+                if (isCorrect === isChecked) {
+                    q8_correct += 1;
+                }
+            });
+            let q8_score = (q8_correct / checkboxes.length) * 3;
+            console.log("Q8: " + q8_correct + "/" + checkboxes.length + " = " + q8_score + "/3");
+            totalScore += q8_score;
+
+            // Q9-Q18 (5 points - 10 questions)
+            let q9_18_score = 0;
+            for (let i = 9; i <= 18; i++) {
+                const qId = 'q' + i;
+                const selected = document.querySelector(`input[name="${qId}"]:checked`);
+                if (selected && selected.getAttribute('data-correct') === 'true') {
+                    q9_18_score += 1;
+                }
+            }
+            let q9_18_points = (q9_18_score / 10) * 5;
+            console.log("Q9-Q18: " + q9_18_score + "/10 = " + q9_18_points + "/5");
+            totalScore += q9_18_points;
+
+            console.log("TOTAL: " + totalScore + "/20");
+            console.log("=== FIN CALCUL ===");
+
+            return {
+                score: Math.round(totalScore * 10) / 10,
+                maxScore: 20,
+                percentage: (totalScore / 20) * 100
+            };
+        }
+
+        // Submit and correct
+        function submitAndCorrect() {
+            const name = document.getElementById('studentName').value;
+            const className = document.getElementById('studentClass').value;
+            const group = document.getElementById('studentGroup').value;
+
+            if (!name || !className || !group) {
+                alert('Veuillez remplir tous les champs (Nom, Classe, Groupe)');
+                return;
+            }
+
+            // Clear previous logs
+            console.clear();
+            
+            // Calculate score FIRST
+            const result = calculateScore();
+            
+            // Disable all inputs
+            const allInputs = document.querySelectorAll('input, select');
+            allInputs.forEach(input => input.disabled = true);
+
+            // Show corrections
+            showCorrections();
+
+            // Show score (pass result directly)
+            showScore(result);
+
+            // Update button
+            document.getElementById('submitBtn').textContent = '✓ Corrigé';
+            document.getElementById('submitBtn').disabled = true;
+        }
+
+        // Show corrections
+        function showCorrections() {
+            const radioQuestions = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q9', 'q10', 'q11', 'q12', 'q13', 'q14', 'q15', 'q16', 'q17', 'q18'];
+            
+            radioQuestions.forEach(qId => {
+                const options = document.querySelectorAll(`input[name="${qId}"]`);
+                options.forEach(option => {
+                    const isCorrect = option.getAttribute('data-correct') === 'true';
+                    const label = option.closest('.option-label');
+                    if (isCorrect) {
+                        label.style.backgroundColor = '#d4edda';
+                        label.style.borderColor = '#00a86b';
+                    } else if (option.checked) {
+                        label.style.backgroundColor = '#f8d7da';
+                        label.style.borderColor = '#dc3545';
+                    }
+                });
+            });
+
+            // Show matching corrections
+            for (let i = 0; i < 6; i++) {
+                const select = document.querySelector(`select[name="q7_${i}"]`);
+                if (select) {
+                    const correct = parseInt(select.getAttribute('data-correct'));
+                    if (select.value === '') {
+                        select.style.borderColor = '#dc3545';
+                        select.style.backgroundColor = '#f8d7da';
+                    } else if (parseInt(select.value) === correct) {
+                        select.style.borderColor = '#00a86b';
+                        select.style.backgroundColor = '#d4edda';
+                    } else {
+                        select.style.borderColor = '#dc3545';
+                        select.style.backgroundColor = '#f8d7da';
+                    }
+                }
+            }
+
+            // Show checkbox corrections
+            const checkboxes = document.querySelectorAll('input[name="q8"]');
+            checkboxes.forEach(checkbox => {
+                const isCorrect = checkbox.getAttribute('data-correct') === 'true';
+                const label = checkbox.closest('.option-label');
+                if (isCorrect && checkbox.checked) {
+                    label.style.backgroundColor = '#d4edda';
+                    label.style.borderColor = '#00a86b';
+                } else if (!isCorrect && checkbox.checked) {
+                    label.style.backgroundColor = '#f8d7da';
+                    label.style.borderColor = '#dc3545';
+                } else if (isCorrect && !checkbox.checked) {
+                    label.style.backgroundColor = '#f0f7ff';
+                    label.style.borderColor = '#64c8ff';
+                }
+            });
+        }
+
+        // Show score
+        function showScore(result) {
+            const display = document.getElementById('scoreDisplay');
+            const scoreValue = document.getElementById('scoreValue');
+            const scoreMessage = document.getElementById('scoreMessage');
+
+            console.log("AFFICHAGE SCORE: " + result.score + " / " + result.maxScore);
+            
+            scoreValue.textContent = `${result.score} / ${result.maxScore}`;
+            
+            if (result.percentage >= 80) {
+                scoreMessage.textContent = '✅ Excellent ! Vous maîtrisez bien les composants informatiques.';
+                scoreValue.style.color = '#00a86b';
+            } else if (result.percentage >= 60) {
+                scoreMessage.textContent = '👍 Bon travail ! Il faut renforcer certains points.';
+                scoreValue.style.color = '#2d7ab8';
+            } else if (result.percentage >= 40) {
+                scoreMessage.textContent = '⚠️ À réviser. Concentrez-vous sur les composants internes.';
+                scoreValue.style.color = '#ffc107';
+            } else {
+                scoreMessage.textContent = '❌ À revoir complètement. Relisez le cours sur l\'assemblage PC.';
+                scoreValue.style.color = '#dc3545';
+            }
+
+            display.classList.add('show');
+            display.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Reset form
+        function resetForm() {
+            if (confirm('Es-tu sûr de vouloir recommencer?')) {
+                location.reload();
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('load', initializeQuestions);
+    </script>
+</body>
+</html>
