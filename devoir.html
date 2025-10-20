@@ -554,7 +554,8 @@
                         correct: 5
                     }
                 ],
-                points: 6
+                // each correct pair will be scored as 0.25 (6 * 0.25 = 1.5)
+                points: 1.5
             },
             {
                 id: 'q8',
@@ -574,7 +575,8 @@
                     { text: 'WiFi Card', ar: 'بطاقة الواي فاي', correct: true },
                     { text: 'Imprimante', ar: 'الطابعة', correct: false }
                 ],
-                points: 5
+                // checkbox scoring: exact-match per option scaled to 2.5 total
+                points: 2.5
             },
             {
                 id: 'q9',
@@ -814,13 +816,12 @@
             });
         }
 
-        // Calculate score - DEBUG VERSION
+        // Calculate score - NEW WEIGHTS
         function calculateScore() {
             let totalScore = 0;
-            
             console.log("=== CALCUL SCORE ===");
-            
-            // Q1-Q6 (6 points)
+
+            // Q1-Q6: 1 point each (total 6)
             let q1_6_score = 0;
             for (let i = 1; i <= 6; i++) {
                 const qId = 'q' + i;
@@ -832,43 +833,39 @@
             console.log("Q1-Q6: " + q1_6_score + "/6");
             totalScore += q1_6_score;
 
-            // Q7 (6 points - matching)
+            // Q7 matching: 6 pairs, each worth 0.25 -> total 1.5
             let q7_score = 0;
             for (let i = 0; i < 6; i++) {
                 const select = document.querySelector(`select[name="q7_${i}"]`);
                 if (select) {
                     const correct = parseInt(select.getAttribute('data-correct'));
-                    const selected = parseInt(select.value);
-                    if (select.value !== '' && selected === correct) {
-                        q7_score += 1;
+                    const val = select.value;
+                    if (val !== '' && parseInt(val) === correct) {
+                        q7_score += 0.25;
                     }
                 }
             }
-            console.log("Q7: " + q7_score + "/6");
+            console.log("Q7: " + (q7_score / 0.25) + "/6 pairs -> " + q7_score + "/1.5");
             totalScore += q7_score;
 
-            // Q8 (3 points - checkboxes) - CORRECTED
-            let q8_correct = 0;
+            // Q8 (checkboxes): 10 options, 5 correct. Scoring uses exact-match per option scaled to 2.5 total
             const checkboxes = document.querySelectorAll('input[name="q8"]');
+            let q8_matches = 0;
             console.log("Nombre de checkboxes trouvées: " + checkboxes.length);
-            
             checkboxes.forEach((checkbox, idx) => {
-                const isCorrectAttr = checkbox.getAttribute('data-correct');
-                const isCorrect = isCorrectAttr === 'true';
+                const isCorrect = checkbox.getAttribute('data-correct') === 'true';
                 const isChecked = checkbox.checked;
                 const text = checkbox.getAttribute('data-text');
-                
                 console.log(`  CB ${idx}: text="${text}", correct=${isCorrect}, checked=${isChecked}`);
-                
                 if (isCorrect === isChecked) {
-                    q8_correct += 1;
+                    q8_matches += 1;
                 }
             });
-            let q8_score = (q8_correct / checkboxes.length) * 3;
-            console.log("Q8: " + q8_correct + "/" + checkboxes.length + " = " + q8_score + "/3");
+            const q8_score = (q8_matches / checkboxes.length) * 2.5;
+            console.log("Q8: " + q8_matches + "/" + checkboxes.length + " = " + q8_score + "/2.5");
             totalScore += q8_score;
 
-            // Q9-Q18 (5 points - 10 questions)
+            // Q9-Q18: 10 questions, 1 point each (total 10)
             let q9_18_score = 0;
             for (let i = 9; i <= 18; i++) {
                 const qId = 'q' + i;
@@ -877,15 +874,14 @@
                     q9_18_score += 1;
                 }
             }
-            let q9_18_points = (q9_18_score / 10) * 5;
-            console.log("Q9-Q18: " + q9_18_score + "/10 = " + q9_18_points + "/5");
-            totalScore += q9_18_points;
+            console.log("Q9-Q18: " + q9_18_score + "/10");
+            totalScore += q9_18_score;
 
             console.log("TOTAL: " + totalScore + "/20");
             console.log("=== FIN CALCUL ===");
 
             return {
-                score: Math.round(totalScore * 10) / 10,
+                score: Math.round(totalScore * 100) / 100, // Augmentation de la précision
                 maxScore: 20,
                 percentage: (totalScore / 20) * 100
             };
