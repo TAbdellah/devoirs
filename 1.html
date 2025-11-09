@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen Complet - Unités 1 & 2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .timer-section {
+            background: #dc3545;
+            color: white;
+            padding: 15px 371px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            position: fixed;
+            top: 0;
+            z-index: 100;
+        }
+
+        .timer-section.warning {
+            background: #ff6b6b;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .header h1 {
+            font-size: 26px;
+            margin-bottom: 5px;
+        }
+
+        .student-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            padding: 25px 30px;
+            background: #f8f9fa;
+            flex-shrink: 0;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .info-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-field label {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .info-field label .required {
+            color: #dc3545;
+        }
+
+        .info-field input,
+        .info-field select {
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 14px;
+            background: white;
+            width: 100%;
+            transition: all 0.3s;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .info-field input:focus,
+        .info-field select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .info-field input.error,
+        .info-field select.error {
+            border-color: #dc3545;
+            background-color: #fff5f5;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 11px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .content {
+            padding: 30px;
+            overflow-y: auto;
+            position: relative;
+            z-index: 5;
+            flex: 1;
+        }
+
+        .exercise {
+            margin-bottom: 35px;
+        }
+
+        .exercise-title {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .question-block {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .question-title {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .question-image {
+            margin: 12px 0;
+            text-align: center;
+        }
+
+        .question-image img {
+            max-width: 100%;
+            height: auto;
+            max-height: 200px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border: 2px solid #dee2e6;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option:hover {
+            background: #e7f1ff;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            margin-right: 10px;
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+
+        .option span {
+            font-size: 13px;
+            color: #333;
+        }
+
+        .option .arabic {
+            color: #666;
+            font-size: 12px;
+            display: block;
+            margin-top: 3px;
+        }
+
+        .input-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .input-field input {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid #dee2e6;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+
+        .input-field span {
+            font-weight: 600;
+            color: #667eea;
+            min-width: 50px;
+        }
+
+        .conversion-image {
+            background: #e7f1ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .conversion-image img {
+            max-width: 100%;
+            height: auto;
+            max-height: 250px;
+            border-radius: 6px;
+        }
+
+        .drag-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .available-items {
+            background: #e7f1ff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 3px dashed #667eea;
+            min-height: 250px;
+        }
+
+        .available-items-title {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .drop-zone {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 3px solid #dee2e6;
+            min-height: 250px;
+            transition: all 0.3s;
+        }
+
+        .drop-zone.active {
+            background: #fff3cd;
+            border-color: #ffc107;
+            box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
+        }
+
+        .drop-zone-title {
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+            font-size: 14px;
+            text-align: center;
+            padding: 8px;
+            border-radius: 6px;
+            background: #667eea;
+        }
+
+        .draggable {
+            background: white;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 2px solid #667eea;
+            cursor: grab;
+            user-select: none;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .draggable:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .draggable:active {
+            cursor: grabbing;
+            opacity: 0.7;
+        }
+
+        .draggable-placed {
+            background: #d4edda;
+            border-color: #28a745;
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+        }
+
+        .btn-submit {
+            background: #28a745;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-submit:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            opacity: 0.6;
+        }
+
+        .btn-submit:disabled:hover {
+            background: #ccc;
+            transform: none;
+        }
+
+        .exam-section.hide {
+            display: none;
+        }
+
+        .report-section {
+            display: none;
+            padding: 30px;
+        }
+
+        .report-section.show {
+            display: block;
+        }
+
+        .student-id-box {
+            background: #e7f1ff;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .student-id-box h3 {
+            color: #667eea;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .student-id-box p {
+            color: #333;
+            font-size: 13px;
+            margin: 3px 0;
+        }
+
+        .score-box {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .score-value {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+        }
+
+        .results-table th {
+            background: #667eea;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .results-table td {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 12px;
+        }
+
+        .results-table .correct {
+            background: #d4edda;
+        }
+
+        .results-table .incorrect {
+            background: #f8d7da;
+        }
+
+        @media (max-width: 768px) {
+            .student-info {
+                grid-template-columns: 1fr;
+            }
+            .drag-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="timer-section">
+            Temps: <span id="timer">20:00</span> | الوقت المتبقي
+        </div>
+
+        <div class="exam-section">
+            <div class="header">
+                <h1>Évaluation N1</h1>
+                <p>Environnement matériel et Composants Informatiques</p>
+            </div>
+
+            <div class="student-info">
+                <div class="info-field">
+                    <label>Nom et Prénom <span class="required">*</span></label>
+                    <input type="text" id="nom" placeholder="Votre nom complet">
+                    <div class="error-message">Ce champ est obligatoire</div>
+                </div>
+                <div class="info-field">
+                    <label>Classe <span class="required">*</span></label>
+                    <select id="classe">
+                        <option value="">-- Choisir --</option>
+                        <option>2/1</option><option>2/2</option><option>2/3</option>
+                        <option>2/4</option><option>2/5</option><option>2/6</option>
+                        <option>2/7</option><option>2/8</option><option>2/9</option>
+                    </select>
+                    <div class="error-message">Ce champ est obligatoire</div>
+                </div>
+                <div class="info-field">
+                    <label>Groupe <span class="required">*</span></label>
+                    <select id="groupe">
+                        <option value="">-- Choisir --</option>
+                        <option>G1</option><option>G2</option>
+                    </select>
+                    <div class="error-message">Ce champ est obligatoire</div>
+                </div>
+            </div>
+
+            <div class="content">
+                <!-- UNITÉ 1 -->
+                <div class="exercise">
+                    <div class="exercise-title">Unité 1: Périphériques d'entrée/sortie (5 pts)</div>
+                    
+                    <div class="question-block">
+                        <div class="question-title">1. Quel périphérique permet de saisir du texte? | أي جهاز يستخدم لإدخال النصوص؟</div>
+                        <label class="option">
+                            <input type="radio" name="q1" value="A">
+                            <span>A) La souris <span class="arabic">(الفأرة)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="B" data-correct="true">
+                            <span>B) Le clavier <span class="arabic">(لوحة المفاتيح)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="C">
+                            <span>C) L'écran <span class="arabic">(الشاشة)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="D">
+                            <span>D) L'imprimante <span class="arabic">(الطابعة)</span></span>
+                        </label>
+                    </div>
+
+                    <div class="question-block">
+                        <div class="question-title">2. Le scanner sert à : | الماسح الضوئي يستخدم ل:</div>
+                        <div class="question-image">
+                            <img src="https://i.imgur.com/i500XMt.png" alt="Scanner" loading="lazy">
+                        </div>
+                        <label class="option">
+                            <input type="radio" name="q2" value="A">
+                            <span>A) Imprimer sur papier <span class="arabic">(الطباعة على الورق)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q2" value="B" data-correct="true">
+                            <span>B) Numériser des documents <span class="arabic">(رقمنة الوثائق)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q2" value="C">
+                            <span>C) Afficher des images <span class="arabic">(عرض الصور)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q2" value="D">
+                            <span>D) Contrôler un jeu <span class="arabic">(التحكم في لعبة)</span></span>
+                        </label>
+                    </div>
+
+                    <div class="question-block">
+                        <div class="question-title">3. Le vidéo-projecteur est un périphérique de: | جهاز عرض الفيديو جهاز   من:</div>
+                        <div class="question-image">
+                            <img src="https://i.imgur.com/Ky47Zis.png" alt="vidéo-projecteur" loading="lazy">
+                        </div>
+                        <label class="option">
+                            <input type="radio" name="q3" value="A">
+                            <span>A) Entrée <span class="arabic">(الإدخال)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q3" value="B">
+                            <span>B) Stockage <span class="arabic">(التخزين)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q3" value="C" data-correct="true">
+                            <span>C) Sortie <span class="arabic">(الإخراج)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q3" value="D">
+                            <span>D) Communication <span class="arabic">(التواصل)</span></span>
+                        </label>
+                    </div>
+
+                    <div class="question-block">
+                        <div class="question-title">4. Laquelle contient UNIQUEMENT des stockages? | أيها يضم فقط أجهزة تخزين؟</div>
+                        <label class="option">
+                            <input type="radio" name="q4" value="A">
+                            <span>A) Clavier, Souris, Scanner <span class="arabic">(لوحة المفاتيح، الفأرة، الماسح الضوئي)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q4" value="B">
+                            <span>B) Écran, Imprimante, Haut-parleur  <span class="arabic">(الشاشة، الطابعة، مكبر الصوت)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q4" value="C" data-correct="true">
+                            <span>C) Clé USB, Disque dur, DVD <span class="arabic">(ذاكرة USB، قرص صلب، DVD)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q4" value="D">
+                            <span>D) Webcam, Microphone, Routeur  <span class="arabic">(كاميرا ويب، الميكروفون، الراوتر)</span></span>
+                        </label>
+                    </div>
+
+                    <div class="question-block">
+                        <div class="question-title">5. Le casque audio peut être: | سماعات الرأس يمكن أن تكون:</div>
+                        <div class="question-image">
+                            <img src="https://i.imgur.com/niWKzt4.jpeg" alt="casque" loading="lazy">
+                        </div>
+                        <label class="option">
+                            <input type="radio" name="q5" value="A">
+                            <span>A) Entrée uniquement <span class="arabic">(إدخال فقط)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q5" value="B" data-correct="true">
+                            <span>B) Entrée ET sortie <span class="arabic">(إدخال وإخراج)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q5" value="C">
+                            <span>C) Sortie uniquement <span class="arabic">(إخراج فقط)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q5" value="D">
+                            <span>D) Stockage <span class="arabic">(تخزين)</span></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- UNITÉ 2: COMPOSANTS INTERNES -->
+                <div class="exercise">
+                    <div class="exercise-title">Unité 2: Composants Internes (10 pts)</div>
+                    
+                    <div class="question-block">
+                        <div class="question-title">6. Quel est le rôle principal du CPU? | ما هو الدور الرئيسي للمعالج المركزي؟</div>
+                        <div class="question-image">
+                            <img src="https://i.imgur.com/s7HPQ9D.png" alt="Processeur" loading="lazy">
+                        </div>
+                        <label class="option">
+                            <input type="radio" name="q6" value="A" data-correct="true">
+                            <span>A) Exécuter les instructions du système <span class="arabic">(تنفيذ تعليمات النظام)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q6" value="B">
+                            <span>B) Connecter à Internet <span class="arabic">(الاتصال بالإنترنت)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q6" value="C">
+                            <span>C) Afficher les images <span class="arabic">(عرض الصور)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q6" value="D">
+                            <span>D) Stocker les données <span class="arabic">(تخزين البيانات)</span></span>
+                        </label>
+                    </div>
+
+                    <div class="question-block">
+                        <div class="question-title">7. Quel composant traite les images et vidéos? | أي مكون يعالج الصور والفيديو؟</div>
+                        <label class="option">
+                            <input type="radio" name="q7" value="A">
+                            <span>A) CPU (Processeur)<span class="arabic">(المعالج المركزي)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q7" value="B" data-correct="true">
+                            <span>B) GPU (Carte Graphique) <span class="arabic">(بطاقة الرسومات)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q7" value="C">
+                            <span>C) Carte Mère <span class="arabic">(اللوحة الأم)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q7" value="D">
+                            <span>D) RAM <span class="arabic">(الذاكرة العشوائية)</span></span>
+                        </label>
+                    </div>
+
+                    <div class="question-block">
+                        <div class="question-title">8. Quelle est la fonction de la RAM? | ما وظيفة الذاكرة العشوائية؟</div>
+                        <div class="question-image">
+                            <img src="https://i.imgur.com/uoT2YwA.png" alt="RAM" loading="lazy">
+                        </div>
+                        <label class="option">
+                            <input type="radio" name="q8" value="A" data-correct="true">
+                            <span>A) Stocker temporairement les données <span class="arabic">(تخزين البيانات مؤقتاً)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q8" value="B">
+                            <span>B) Stocker à long terme <span class="arabic">(تخزين على المدى الطويل)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q8" value="C">
+                            <span>C) Alimenter le système <span class="arabic">(تزويد النظام بالطاقة)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q8" value="D">
+                            <span>D) Afficher l'image <span class="arabic">(عرض الصورة)</span></span>
+                        </label>
+                    </div>
+
+                    <div class="question-block">
+                        <div class="question-title">9. Le rôle principal de la Carte Mère est: | الدور الرئيسي للوحة الأم هو:</div>
+                        <div class="question-image">
+                            <img src="https://i.imgur.com/7xmWMsb.png" alt="Carte mère" loading="lazy">
+                        </div>
+                        <label class="option">
+                            <input type="radio" name="q9" value="A">
+                            <span>A) Traiter les calculs <span class="arabic">(معالجة العمليات الحسابية)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q9" value="B">
+                            <span>B) Amplifier le signal WiFi <span class="arabic">(تضخيم إشارة الواي فاي)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q9" value="C">
+                            <span>C) Refroidir le système <span class="arabic">(تبريد جهاز الكمبيوتر)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q9" value="D" data-correct="true">
+                            <span>D) Relier tous les composants <span class="arabic">(ربط جميع المكونات)</span></span>
+                        </label>
+                    </div>
+
+                    <div class="question-block">
+                        <div class="question-title">10. Quel composant alimente tous les éléments? | أي مكون يزود بالطاقة جميع العناصر؟</div>
+                        <label class="option">
+                            <input type="radio" name="q10" value="A" data-correct="true">
+                            <span>A) PSU (Alimentation) <span class="arabic">(مزود الطاقة)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q10" value="B">
+                            <span>B) RAM <span class="arabic">(الذاكرة العشوائية)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q10" value="C">
+                            <span>C) Carte Graphique <span class="arabic">(بطاقة الرسومات)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q10" value="D">
+                            <span>D) Disque SSD <span class="arabic">(محرك الحالة الصلبة)</span></span>
+                        </label>
+                    </div>
+
+                    <div class="question-block">
+                        <div class="question-title">11. La WiFi Card permet de: | تسمح بطاقة الواي فاي ب:</div>
+                        <div class="question-image">
+                            <img src="https://i.imgur.com/iII1WnU.png" alt="WiFi" loading="lazy">
+                        </div>
+                        <label class="option">
+                            <input type="radio" name="q11" value="A">
+                            <span>A) Stocker des données <span class="arabic">(تخزين البيانات)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q11" value="B">
+                            <span>B) Refroidir le système <span class="arabic">(تبريد الجهاز)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q11" value="C">
+                            <span>C) Traiter les images <span class="arabic">(معالجة الصور)</span></span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q11" value="D" data-correct="true">
+                            <span>D) Se connecter à Internet sans fil <span class="arabic">(الاتصال بالإنترنت لاسلكياً)</span></span>
+                        </label>
+                    </div>
+
+                    <div class="conversion-image">
+                        <img src="https://i.imgur.com/udSmtv3.png" alt="Unités de mesure en informatique" loading="lazy">
+                    </div>
+
+                    <div class="question-block">
+                        <div class="question-title">12. Convertir: 20 Go = ? Mo | 20 جيجابايت = ؟ ميجابايت</div>
+                        <div class="input-field">
+                            <input type="number" id="q12" placeholder="Votre réponse">
+                            <span>Mo</span>
+                        </div>
+                    </div>
+
+                    <div class="question-block">
+                        <div class="question-title">13. Convertir: 312 Octet = ? Bit | 312 بايت = ؟ بت</div>
+                        <div class="input-field">
+                            <input type="number" id="q13" placeholder="Votre réponse">
+                            <span>Bit</span>
+                        </div>
+                    </div>
+
+                    <div class="question-block">
+                        <div class="question-title">14. Convertir: 12 Mo = ? Ko | 12 ميجابايت = ؟ كيلوبايت</div>
+                        <div class="input-field">
+                            <input type="number" id="q14" placeholder="Votre réponse">
+                            <span>Ko</span>
+                        </div>
+                    </div>
+
+                    <div class="question-block">
+                        <div class="question-title">15. Convertir: 4 To = ? Ko | 4 تيرابايت = ؟ كيلوبايت</div>
+                        <div class="input-field">
+                            <input type="number" id="q15" placeholder="Votre réponse">
+                            <span>Ko</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EXERCICE 3: GLISSER-DÉPOSER -->
+                <div class="exercise">
+                    <div class="exercise-title">Exercice 3: Classez les périphériques (3 pts)</div>
+                    
+                    <div class="question-block">
+                        <div class="question-title">Classez les périphériques dans la bonne catégorie | صنف الأجهزة ال في الفئة الصحيحة</div>
+                        
+                        <div class="drag-container">
+                            <div class="available-items">
+                                <div class="available-items-title">À classer</div>
+                                <div id="available-container">
+                                    <div class="draggable" draggable="true" data-item="Clavier">Clavier</div>
+                                    <div class="draggable" draggable="true" data-item="Webcam">Webcam</div>
+                                    <div class="draggable" draggable="true" data-item="Écran">Écran</div>
+                                    <div class="draggable" draggable="true" data-item="Microphone">Microphone</div>
+                                    <div class="draggable" draggable="true" data-item="Imprimante">Imprimante</div>
+                                </div>
+                            </div>
+
+                            <div class="drop-zone" id="drop-entree" data-category="ENTRÉE">
+                                <div class="drop-zone-title">ENTRÉE (الإدخال)</div>
+                            </div>
+
+                            <div class="drop-zone" id="drop-sortie" data-category="SORTIE">
+                                <div class="drop-zone-title">SORTIE (الإخراج)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-submit" onclick="submitExam()" id="submitBtn">✅ SOUMETTRE L'EXAMEN</button>
+            </div>
+        </div>
+
+        <!-- RAPPORT -->
+        <div class="report-section">
+            <div class="student-id-box">
+                <h3>Identification de l'élève</h3>
+                <p><strong>Nom et Prénom:</strong> <span id="report-nom">-</span></p>
+                <p><strong>Classe:</strong> <span id="report-classe">-</span></p>
+                <p><strong>Groupe:</strong> <span id="report-groupe">-</span></p>
+            </div>
+
+            <div class="score-box">
+                <div style="font-size: 18px;">NOTE FINALE | العلامة النهائية</div>
+                <div class="score-value"><span id="final-score">0</span>/20</div>
+                <div id="message-result" style="font-size: 16px; margin-top: 10px;">Merci!</div>
+            </div>
+
+            <h2 style="color: #667eea; margin: 20px 0;">Résultats détaillés | النتائج المفصلة</h2>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Votre réponse</th>
+                        <th>Réponse correcte</th>
+                        <th>Résultat</th>
+                    </tr>
+                </thead>
+                <tbody id="results-body"></tbody>
+            </table>
+
+            <button class="btn-submit" onclick="window.print()" style="background: #667eea; margin-top: 30px;">🖨️ IMPRIMER</button>
+        </div>
+    </div>
+
+    <script>
+        let timeRemaining = 20 * 60;
+        let isSubmitted = false;
+        let draggedElement = null;
+
+        const correctAnswers = {
+            q1: 'B', q2: 'B', q3: 'C', q4: 'C', q5: 'B',
+            q6: 'A', q7: 'B', q8: 'A', q9: 'D', q10: 'A', q11: 'D',
+            q12: 20000, q13: 2496, q14: 12000, q15: 4000000000
+        };
+
+        const correctClassification = {
+            'ENTRÉE': ['Clavier', 'Webcam', 'Microphone'],
+            'SORTIE': ['Écran', 'Imprimante']
+        };
+
+        // VALIDATION DES CHAMPS
+        function validateForm() {
+            let isValid = true;
+            const nom = document.getElementById('nom');
+            const classe = document.getElementById('classe');
+            const groupe = document.getElementById('groupe');
+
+            [nom, classe, groupe].forEach(field => {
+                const errorMsg = field.parentElement.querySelector('.error-message');
+                if (!field.value.trim()) {
+                    field.classList.add('error');
+                    errorMsg.classList.add('show');
+                    isValid = false;
+                } else {
+                    field.classList.remove('error');
+                    errorMsg.classList.remove('show');
+                }
+            });
+
+            return isValid;
+        }
+
+        function setupDragAndDrop() {
+            const draggables = document.querySelectorAll('.draggable');
+            const dropZones = document.querySelectorAll('.drop-zone');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', (e) => {
+                    draggedElement = draggable;
+                    draggable.style.opacity = '0.5';
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+
+                draggable.addEventListener('dragend', (e) => {
+                    draggable.style.opacity = '1';
+                });
+            });
+
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    zone.classList.add('active');
+                });
+
+                zone.addEventListener('dragleave', (e) => {
+                    if (e.target === zone) {
+                        zone.classList.remove('active');
+                    }
+                });
+
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('active');
+                    
+                    if (draggedElement) {
+                        const clone = draggedElement.cloneNode(true);
+                        clone.classList.add('draggable-placed');
+                        clone.draggable = true;
+                        draggedElement.remove();
+                        zone.appendChild(clone);
+                        attachDragEvents(clone);
+                        checkAllAnswers();
+                    }
+                });
+            });
+        }
+
+        function attachDragEvents(element) {
+            element.addEventListener('dragstart', (e) => {
+                draggedElement = element;
+                element.style.opacity = '0.5';
+                e.dataTransfer.effectAllowed = 'move';
+            });
+
+            element.addEventListener('dragend', (e) => {
+                element.style.opacity = '1';
+            });
+        }
+
+        setupDragAndDrop();
+
+        // VÉRIFIER SI TOUS LES CHAMPS SONT REMPLIS
+        function checkAllAnswers() {
+            let allFilled = true;
+
+            // Vérifier les infos de l'élève
+            if (!document.getElementById('nom').value.trim() || 
+                !document.getElementById('classe').value.trim() || 
+                !document.getElementById('groupe').value.trim()) {
+                allFilled = false;
+            }
+
+            // Vérifier les 11 questions QCM
+            if (allFilled) {
+                for (let i = 1; i <= 11; i++) {
+                    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                    if (!selected) {
+                        allFilled = false;
+                        break;
+                    }
+                }
+            }
+
+            // Vérifier les 4 questions numériques
+            if (allFilled) {
+                for (let i = 12; i <= 15; i++) {
+                    const value = document.getElementById(`q${i}`).value.trim();
+                    if (!value) {
+                        allFilled = false;
+                        break;
+                    }
+                }
+            }
+
+            // Vérifier le drag & drop (tous les 5 éléments doivent être placés)
+            if (allFilled) {
+                const entreeZone = document.querySelector('[data-category="ENTRÉE"]');
+                const sortieZone = document.querySelector('[data-category="SORTIE"]');
+                const totalPlaced = entreeZone.querySelectorAll('.draggable-placed').length + 
+                                   sortieZone.querySelectorAll('.draggable-placed').length;
+                
+                if (totalPlaced < 5) {
+                    allFilled = false;
+                }
+            }
+
+            // Activer/Désactiver le bouton
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = !allFilled;
+
+            return allFilled;
+        }
+
+        // Vérifier au chargement et à chaque changement
+        document.getElementById('nom').addEventListener('input', checkAllAnswers);
+        document.getElementById('classe').addEventListener('change', checkAllAnswers);
+        document.getElementById('groupe').addEventListener('change', checkAllAnswers);
+
+        // Vérifier pour les QCM
+        for (let i = 1; i <= 11; i++) {
+            const radios = document.querySelectorAll(`input[name="q${i}"]`);
+            radios.forEach(radio => {
+                radio.addEventListener('change', checkAllAnswers);
+            });
+        }
+
+        // Vérifier pour les champs numériques
+        for (let i = 12; i <= 15; i++) {
+            document.getElementById(`q${i}`).addEventListener('input', checkAllAnswers);
+        }
+
+        // Vérifier le drag & drop
+        const entreeZone = document.querySelector('[data-category="ENTRÉE"]');
+        const sortieZone = document.querySelector('[data-category="SORTIE"]');
+        entreeZone.addEventListener('DOMNodeInserted', checkAllAnswers);
+        entreeZone.addEventListener('DOMNodeRemoved', checkAllAnswers);
+        sortieZone.addEventListener('DOMNodeInserted', checkAllAnswers);
+        sortieZone.addEventListener('DOMNodeRemoved', checkAllAnswers);
+
+        // Vérifier initialement
+        checkAllAnswers();
+
+        // Minuteur
+        setInterval(() => {
+            if (isSubmitted) return;
+            timeRemaining--;
+            const min = Math.floor(timeRemaining / 60);
+            const sec = timeRemaining % 60;
+            document.getElementById('timer').textContent = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+            
+            if (timeRemaining <= 300) {
+                document.querySelector('.timer-section').classList.add('warning');
+            }
+            if (timeRemaining <= 0) {
+                submitExam();
+            }
+        }, 1000);
+
+        // SUBMIT
+        function submitExam() {
+            if (isSubmitted) return;
+            
+            if (!validateForm()) {
+                alert('Veuillez remplir tous les champs obligatoires!');
+                return;
+            }
+
+            isSubmitted = true;
+
+            const nom = document.getElementById('nom').value;
+            const classe = document.getElementById('classe').value;
+            const groupe = document.getElementById('groupe').value;
+
+            let score = 0;
+            // Valeur correcte du score maximum :
+            // QCM (11 questions * 5 pts) = 55
+            // Calculs (4 questions * 3 pts) = 12
+            // Glisser-déposer = 3
+            // Total = 70
+            let maxScore = 70;
+            let resultsHTML = '';
+
+            // Questions QCM (Q1-Q11) - 5 pts chacune
+            for (let i = 1; i <= 11; i++) {
+                const qId = `q${i}`;
+                const selected = document.querySelector(`input[name="${qId}"]:checked`);
+                const userAnswer = selected ? selected.value : '–';
+                const correctAnswer = correctAnswers[qId];
+                const isCorrect = userAnswer === correctAnswer;
+                
+                if (isCorrect) score += 5;
+
+                resultsHTML += `
+                    <tr class="${isCorrect ? 'correct' : 'incorrect'}">
+                        <td><strong>Q${i}</strong></td>
+                        <td>${userAnswer}</td>
+                        <td>${correctAnswer}</td>
+                        <td>${isCorrect ? '✓ 5/5' : '✗ 0/5'}</td>
+                    </tr>
+                `;
+            }
+
+            // Questions de calcul (Q12-Q15) - 3 pts chacune
+            for (let i = 12; i <= 15; i++) {
+                const qId = `q${i}`;
+                const userAnswer = parseInt(document.getElementById(qId).value) || 0;
+                const correctAnswer = correctAnswers[qId];
+                const isCorrect = userAnswer === correctAnswer;
+                
+                if (isCorrect) score += 3;
+
+                resultsHTML += `
+                    <tr class="${isCorrect ? 'correct' : 'incorrect'}">
+                        <td><strong>Q${i}</strong></td>
+                        <td>${userAnswer}</td>
+                        <td>${correctAnswer}</td>
+                        <td>${isCorrect ? '✓ 3/3' : '✗ 0/3'}</td>
+                    </tr>
+                `;
+            }
+
+            // Vérifier le glisser-déposer (3 pts)
+            let dragDropScore = 0;
+            let dragDropDetails = '';
+            
+            for (const [category, items] of Object.entries(correctClassification)) {
+                const zone = document.querySelector(`[data-category="${category}"]`);
+                const placedItems = Array.from(zone.querySelectorAll('.draggable-placed')).map(el => el.textContent.trim());
+                
+                items.forEach(item => {
+                    if (placedItems.includes(item)) {
+                        dragDropScore++;
+                    }
+                });
+
+                dragDropDetails += `<br><strong>${category}:</strong> ${items.join(', ')}`;
+            }
+
+            if (dragDropScore === 5) {
+                score += 3;
+            }
+
+            resultsHTML += `
+                <tr class="${dragDropScore === 5 ? 'correct' : 'incorrect'}">
+                    <td><strong>Ex 3</strong></td>
+                    <td>Glisser-Déposer</td>
+                    <td>5 corrects</td>
+                    <td>${dragDropScore === 5 ? '✓ 3/3' : '✗ 0/3'} (${dragDropScore}/5)${dragDropDetails}</td>
+                </tr>
+            `;
+
+            // Convertir le score sur 20
+            // Calculer la note sur 20 et la plafonner à 20 pour éviter d'afficher >20/20
+            const finalScore = Math.min(20, Math.round((score / maxScore) * 20));
+
+            document.getElementById('report-nom').textContent = nom;
+            document.getElementById('report-classe').textContent = classe;
+            document.getElementById('report-groupe').textContent = groupe;
+            document.getElementById('final-score').textContent = finalScore;
+            document.getElementById('results-body').innerHTML = resultsHTML;
+
+            // Message de résultat (sur 20)
+            if (finalScore >= 18) {
+                document.getElementById('message-result').textContent = '🌟 Excellent! Très bien réussi!';
+                document.getElementById('message-result').style.color = '#28a745';
+            } else if (finalScore >= 14) {
+                document.getElementById('message-result').textContent = '👍 Très bien!';
+                document.getElementById('message-result').style.color = '#20c997';
+            } else if (finalScore >= 10) {
+                document.getElementById('message-result').textContent = '📚 Satisfaisant';
+                document.getElementById('message-result').style.color = '#ffc107';
+            } else {
+                document.getElementById('message-result').textContent = '⚠️ À retravailler';
+                document.getElementById('message-result').style.color = '#dc3545';
+            }
+
+            document.querySelector('.exam-section').classList.add('hide');
+            document.querySelector('.report-section').classList.add('show');
+        }
+
+        // Ajouter écouteur de validation aux champs
+        document.getElementById('nom').addEventListener('blur', validateForm);
+        document.getElementById('classe').addEventListener('blur', validateForm);
+        document.getElementById('groupe').addEventListener('blur', validateForm);
+    </script>
+</body>
+</html>
