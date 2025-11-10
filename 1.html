@@ -5,6 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Examen Complet - Unités 1 & 2</title>
     <style>
+        /* Styles pour l'overlay de mot de passe */
+        .password-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .password-box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .password-box h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .password-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .password-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .password-box button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .password-box button:hover {
+            background: #5a6fd6;
+            transform: translateY(-2px);
+        }
+
+        .password-box .error-message {
+            color: #dc3545;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .container {
+            display: none;
+        }
+
+        .container.visible {
+            display: block;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -453,7 +528,17 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Overlay de mot de passe -->
+    <div class="password-overlay" id="passwordOverlay">
+        <div class="password-box">
+            <h2>Accès Sécurisé | الدخول الآمن</h2>
+            <input type="password" id="passwordInput" placeholder="Entrez le mot de passe | أدخل كلمة المرور" autocomplete="off">
+            <button onclick="checkPassword()">Accéder | دخول</button>
+            <div class="error-message" id="passwordError">Mot de passe incorrect | كلمة المرور غير صحيحة</div>
+        </div>
+    </div>
+
+    <div class="container" id="mainContent">
         <div class="timer-section">
             Temps: <span id="timer">20:00</span> | الوقت المتبقي
         </div>
@@ -840,10 +925,12 @@
                 <tbody id="results-body"></tbody>
             </table>
 
-            <button class="btn-submit" onclick="window.print()" style="background: #667eea; margin-top: 30px;">🖨️ IMPRIMER</button>
+            <button class="btn-submit" onclick="captureAndSave()" style="background: #667eea; margin-top: 30px;">🖨️ IMPRIMER</button>
         </div>
     </div>
 
+    <!-- Ajout de la bibliothèque html2canvas -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
         let timeRemaining = 20 * 60;
         let isSubmitted = false;
@@ -1024,20 +1111,54 @@
         checkAllAnswers();
 
         // Minuteur
-        setInterval(() => {
-            if (isSubmitted) return;
-            timeRemaining--;
-            const min = Math.floor(timeRemaining / 60);
-            const sec = timeRemaining % 60;
-            document.getElementById('timer').textContent = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        // Script de protection par mot de passe
+        const correctPassword = "2024"; // Mot de passe pour accéder à l'examen
+        let timerInterval;
+
+        function checkPassword() {
+            const passwordInput = document.getElementById('passwordInput');
+            const passwordError = document.getElementById('passwordError');
+            const overlay = document.getElementById('passwordOverlay');
+            const content = document.getElementById('mainContent');
+
+            if (passwordInput.value === correctPassword) {
+                overlay.style.display = 'none';
+                content.classList.add('visible');
+                // Démarrer le minuteur seulement après l'accès
+                startTimer();
+            } else {
+                passwordError.style.display = 'block';
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+
+        // Écouter la touche Entrée pour la validation du mot de passe
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        function startTimer() {
+            // Initialiser et démarrer le timer
+            if (timerInterval) clearInterval(timerInterval);
             
-            if (timeRemaining <= 300) {
-                document.querySelector('.timer-section').classList.add('warning');
-            }
-            if (timeRemaining <= 0) {
-                submitExam();
-            }
-        }, 1000);
+            timerInterval = setInterval(() => {
+                if (isSubmitted) return;
+                timeRemaining--;
+                const min = Math.floor(timeRemaining / 60);
+                const sec = timeRemaining % 60;
+                document.getElementById('timer').textContent = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+                
+                if (timeRemaining <= 300) {
+                    document.querySelector('.timer-section').classList.add('warning');
+                }
+                if (timeRemaining <= 0) {
+                    submitExam();
+                }
+            }, 1000);
+        }
 
         // SUBMIT
         function submitExam() {
@@ -1165,6 +1286,36 @@
         document.getElementById('nom').addEventListener('blur', validateForm);
         document.getElementById('classe').addEventListener('blur', validateForm);
         document.getElementById('groupe').addEventListener('blur', validateForm);
+
+        // Fonction pour capturer et sauvegarder l'écran
+        function captureAndSave() {
+            const reportSection = document.querySelector('.report-section');
+            const nom = document.getElementById('nom').value;
+            const classe = document.getElementById('classe').value;
+            
+            // Vérifier si les informations sont disponibles
+            if (!nom || !classe) {
+                alert('Erreur: Nom ou classe manquant');
+                return;
+            }
+
+            // Créer le nom du fichier
+            const fileName = `resultat_${nom.replace(/\s+/g, '_')}_${classe}.png`;
+
+            // Capture d'écran avec html2canvas
+            html2canvas(reportSection).then(canvas => {
+                // Créer un lien de téléchargement
+                const link = document.createElement('a');
+                link.download = fileName;
+                link.href = canvas.toDataURL('image/png');
+                
+                // Déclencher le téléchargement
+                link.click();
+            }).catch(err => {
+                console.error('Erreur lors de la capture:', err);
+                alert('Erreur lors de la capture d\'écran');
+            });
+        }
     </script>
 </body>
 </html>
